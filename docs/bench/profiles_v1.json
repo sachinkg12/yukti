@@ -1,0 +1,393 @@
+[ {
+  "id" : "light",
+  "monthly" : false,
+  "spend" : {
+    "OTHER" : 2500.0,
+    "GAS" : 1200.0,
+    "DINING" : 1500.0,
+    "GROCERIES" : 3000.0
+  }
+}, {
+  "id" : "moderate",
+  "monthly" : false,
+  "spend" : {
+    "GROCERIES" : 6000.0,
+    "TRAVEL" : 2000.0,
+    "OTHER" : 5000.0,
+    "GAS" : 2400.0,
+    "DINING" : 3000.0,
+    "ONLINE" : 1200.0
+  }
+}, {
+  "id" : "heavy",
+  "monthly" : false,
+  "spend" : {
+    "GROCERIES" : 15000.0,
+    "TRAVEL" : 8000.0,
+    "OTHER" : 10000.0,
+    "GAS" : 3600.0,
+    "DINING" : 6000.0,
+    "ONLINE" : 3000.0
+  }
+}, {
+  "id" : "balanced",
+  "monthly" : false,
+  "spend" : {
+    "GROCERIES" : 5000.0,
+    "TRAVEL" : 2500.0,
+    "OTHER" : 4000.0,
+    "GAS" : 2000.0,
+    "DINING" : 2500.0,
+    "ONLINE" : 1500.0
+  }
+}, {
+  "id" : "minimal",
+  "monthly" : false,
+  "spend" : {
+    "OTHER" : 5000.0
+  }
+}, {
+  "id" : "high-net-worth",
+  "monthly" : false,
+  "spend" : {
+    "GROCERIES" : 24000.0,
+    "TRAVEL" : 20000.0,
+    "OTHER" : 20000.0,
+    "GAS" : 6000.0,
+    "DINING" : 12000.0,
+    "ONLINE" : 6000.0
+  }
+}, {
+  "id" : "grocery-heavy",
+  "monthly" : false,
+  "spend" : {
+    "OTHER" : 3000.0,
+    "GROCERIES" : 12000.0,
+    "DINING" : 2000.0
+  }
+}, {
+  "id" : "dining-heavy",
+  "monthly" : false,
+  "spend" : {
+    "OTHER" : 2000.0,
+    "GROCERIES" : 4000.0,
+    "DINING" : 10000.0
+  }
+}, {
+  "id" : "travel-heavy",
+  "monthly" : false,
+  "spend" : {
+    "OTHER" : 5000.0,
+    "DINING" : 4000.0,
+    "TRAVEL" : 15000.0
+  }
+}, {
+  "id" : "gas-heavy",
+  "monthly" : false,
+  "spend" : {
+    "OTHER" : 3000.0,
+    "GAS" : 6000.0,
+    "GROCERIES" : 3000.0
+  }
+}, {
+  "id" : "online-heavy",
+  "monthly" : false,
+  "spend" : {
+    "ONLINE" : 8000.0,
+    "GROCERIES" : 3000.0,
+    "OTHER" : 4000.0
+  }
+}, {
+  "id" : "grocery-heavy-other-low",
+  "monthly" : false,
+  "spend" : {
+    "OTHER" : 1000.0,
+    "GROCERIES" : 12000.0,
+    "DINING" : 2000.0
+  }
+}, {
+  "id" : "grocery-heavy-other-med",
+  "monthly" : false,
+  "spend" : {
+    "OTHER" : 5000.0,
+    "GROCERIES" : 12000.0,
+    "DINING" : 2000.0
+  }
+}, {
+  "id" : "grocery-heavy-other-high",
+  "monthly" : false,
+  "spend" : {
+    "OTHER" : 12000.0,
+    "GROCERIES" : 12000.0,
+    "DINING" : 2000.0
+  }
+}, {
+  "id" : "dining-heavy-other-low",
+  "monthly" : false,
+  "spend" : {
+    "OTHER" : 1000.0,
+    "GROCERIES" : 4000.0,
+    "DINING" : 10000.0
+  }
+}, {
+  "id" : "travel-heavy-other-low",
+  "monthly" : false,
+  "spend" : {
+    "OTHER" : 1000.0,
+    "DINING" : 4000.0,
+    "TRAVEL" : 15000.0
+  }
+}, {
+  "id" : "groceries-cap6000-below",
+  "monthly" : false,
+  "spend" : {
+    "GROCERIES" : 5900.0,
+    "OTHER" : 1000.0
+  }
+}, {
+  "id" : "groceries-cap6000-at",
+  "monthly" : false,
+  "spend" : {
+    "GROCERIES" : 6000.0,
+    "OTHER" : 1000.0
+  }
+}, {
+  "id" : "groceries-cap6000-above",
+  "monthly" : false,
+  "spend" : {
+    "GROCERIES" : 6100.0,
+    "OTHER" : 1000.0
+  }
+}, {
+  "id" : "groceries-cap6000-far",
+  "monthly" : false,
+  "spend" : {
+    "GROCERIES" : 12000.0,
+    "OTHER" : 1000.0
+  }
+}, {
+  "id" : "groceries-cap12000-below",
+  "monthly" : false,
+  "spend" : {
+    "GROCERIES" : 11900.0,
+    "OTHER" : 1000.0
+  }
+}, {
+  "id" : "groceries-cap12000-at",
+  "monthly" : false,
+  "spend" : {
+    "GROCERIES" : 12000.0,
+    "OTHER" : 1000.0
+  }
+}, {
+  "id" : "groceries-cap12000-above",
+  "monthly" : false,
+  "spend" : {
+    "GROCERIES" : 12100.0,
+    "OTHER" : 1000.0
+  }
+}, {
+  "id" : "groceries-cap12000-far",
+  "monthly" : false,
+  "spend" : {
+    "GROCERIES" : 24000.0,
+    "OTHER" : 1000.0
+  }
+}, {
+  "id" : "groceries-cap25000-below",
+  "monthly" : false,
+  "spend" : {
+    "GROCERIES" : 24900.0,
+    "OTHER" : 1000.0
+  }
+}, {
+  "id" : "groceries-cap25000-at",
+  "monthly" : false,
+  "spend" : {
+    "GROCERIES" : 25000.0,
+    "OTHER" : 1000.0
+  }
+}, {
+  "id" : "groceries-cap25000-above",
+  "monthly" : false,
+  "spend" : {
+    "GROCERIES" : 25100.0,
+    "OTHER" : 1000.0
+  }
+}, {
+  "id" : "groceries-cap25000-far",
+  "monthly" : false,
+  "spend" : {
+    "GROCERIES" : 50000.0,
+    "OTHER" : 1000.0
+  }
+}, {
+  "id" : "groceries-cap1500-below",
+  "monthly" : false,
+  "spend" : {
+    "GROCERIES" : 1400.0,
+    "OTHER" : 1000.0
+  }
+}, {
+  "id" : "groceries-cap1500-at",
+  "monthly" : false,
+  "spend" : {
+    "GROCERIES" : 1500.0,
+    "OTHER" : 1000.0
+  }
+}, {
+  "id" : "groceries-cap1500-above",
+  "monthly" : false,
+  "spend" : {
+    "GROCERIES" : 1600.0,
+    "OTHER" : 1000.0
+  }
+}, {
+  "id" : "groceries-cap1500-far",
+  "monthly" : false,
+  "spend" : {
+    "GROCERIES" : 3000.0,
+    "OTHER" : 1000.0
+  }
+}, {
+  "id" : "online-cap2000-below",
+  "monthly" : false,
+  "spend" : {
+    "ONLINE" : 1900.0,
+    "OTHER" : 1000.0
+  }
+}, {
+  "id" : "online-cap2000-at",
+  "monthly" : false,
+  "spend" : {
+    "ONLINE" : 2000.0,
+    "OTHER" : 1000.0
+  }
+}, {
+  "id" : "online-cap2000-above",
+  "monthly" : false,
+  "spend" : {
+    "ONLINE" : 2100.0,
+    "OTHER" : 1000.0
+  }
+}, {
+  "id" : "online-cap2000-far",
+  "monthly" : false,
+  "spend" : {
+    "ONLINE" : 4000.0,
+    "OTHER" : 1000.0
+  }
+}, {
+  "id" : "aa-sweetspot",
+  "monthly" : false,
+  "spend" : {
+    "OTHER" : 2000.0,
+    "TRAVEL" : 12000.0,
+    "DINING" : 6000.0,
+    "GROCERIES" : 3000.0
+  }
+}, {
+  "id" : "flex-sweetspot",
+  "monthly" : false,
+  "spend" : {
+    "OTHER" : 3000.0,
+    "TRAVEL" : 6000.0,
+    "DINING" : 4000.0,
+    "ONLINE" : 8000.0
+  }
+}, {
+  "id" : "cashback-sweetspot",
+  "monthly" : false,
+  "spend" : {
+    "GROCERIES" : 5000.0,
+    "TRAVEL" : 2000.0,
+    "OTHER" : 4000.0,
+    "GAS" : 2000.0,
+    "DINING" : 3000.0,
+    "ONLINE" : 1500.0
+  }
+}, {
+  "id" : "fee-sensitive",
+  "monthly" : false,
+  "spend" : {
+    "OTHER" : 5000.0,
+    "GROCERIES" : 6000.0,
+    "DINING" : 3000.0
+  }
+}, {
+  "id" : "monthly-light",
+  "monthly" : true,
+  "spend" : {
+    "OTHER" : 300.0,
+    "GROCERIES" : 400.0,
+    "DINING" : 200.0
+  }
+}, {
+  "id" : "monthly-moderate",
+  "monthly" : true,
+  "spend" : {
+    "GROCERIES" : 600.0,
+    "TRAVEL" : 200.0,
+    "OTHER" : 500.0,
+    "GAS" : 250.0,
+    "DINING" : 350.0,
+    "ONLINE" : 100.0
+  }
+}, {
+  "id" : "monthly-grocery-cap-below",
+  "monthly" : true,
+  "spend" : {
+    "GROCERIES" : 408.0,
+    "OTHER" : 100.0
+  }
+}, {
+  "id" : "monthly-grocery-cap-at",
+  "monthly" : true,
+  "spend" : {
+    "GROCERIES" : 500.0,
+    "OTHER" : 100.0
+  }
+}, {
+  "id" : "monthly-grocery-cap-above",
+  "monthly" : true,
+  "spend" : {
+    "GROCERIES" : 508.0,
+    "OTHER" : 100.0
+  }
+}, {
+  "id" : "monthly-grocery-cap-far",
+  "monthly" : true,
+  "spend" : {
+    "GROCERIES" : 1000.0,
+    "OTHER" : 100.0
+  }
+}, {
+  "id" : "monthly-travel",
+  "monthly" : true,
+  "spend" : {
+    "TRAVEL" : 1000.0,
+    "OTHER" : 200.0
+  }
+}, {
+  "id" : "monthly-dining",
+  "monthly" : true,
+  "spend" : {
+    "OTHER" : 200.0,
+    "DINING" : 500.0
+  }
+}, {
+  "id" : "monthly-online",
+  "monthly" : true,
+  "spend" : {
+    "ONLINE" : 400.0,
+    "OTHER" : 150.0
+  }
+}, {
+  "id" : "monthly-commuter",
+  "monthly" : true,
+  "spend" : {
+    "OTHER" : 200.0,
+    "GAS" : 350.0,
+    "DINING" : 150.0
+  }
+} ]

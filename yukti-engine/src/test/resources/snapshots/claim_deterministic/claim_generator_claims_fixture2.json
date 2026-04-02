@@ -1,0 +1,71 @@
+[ {
+  "citedEntities" : [ "DINING", "amex-bcp", "amex-gold" ],
+  "citedEvidenceIds" : [ "1849863761febaeb0cbd7dc550e833fc30b2ce57b6b6ad2438c9c90b21ff3f14" ],
+  "citedNumbers" : [ "45.00" ],
+  "claimId" : "bb028c27196d8c7ba0d2b66d9fbb79d9ed245a8ef2e46d4c2dade0763da092c6",
+  "claimType" : "COMPARISON",
+  "normalizedFields" : {
+    "category" : "DINING",
+    "deltaUsd" : "45.00",
+    "runnerUpId" : "amex-bcp",
+    "winnerId" : "amex-gold"
+  }
+}, {
+  "citedEntities" : [ "GROCERIES", "citi-double-cash" ],
+  "citedEvidenceIds" : [ "da38a2514c348ef38357b07913d6f7e714e5366f079bbb4dcb5fee6997ecf242" ],
+  "citedNumbers" : [ "100.00" ],
+  "claimId" : "261bf29c5c90919ade2ec57708ed61374bdeca3b74db639eb84ed243691e68ca",
+  "claimType" : "COMPARISON",
+  "normalizedFields" : {
+    "category" : "GROCERIES",
+    "deltaUsd" : "100.00",
+    "runnerUpId" : "",
+    "winnerId" : "citi-double-cash"
+  }
+}, {
+  "citedEntities" : [ "DINING", "amex-gold" ],
+  "citedEvidenceIds" : [ ],
+  "citedNumbers" : [ ],
+  "claimId" : "e48f626fcbb2353806b378321875f3a39a09f5a72b83d8aec6b54c8b1de6a56a",
+  "claimType" : "ALLOCATION",
+  "normalizedFields" : {
+    "cardId" : "amex-gold",
+    "category" : "DINING",
+    "segmentIndex" : 0,
+    "spendUsd" : ""
+  }
+}, {
+  "citedEntities" : [ "GROCERIES", "citi-double-cash" ],
+  "citedEvidenceIds" : [ ],
+  "citedNumbers" : [ ],
+  "claimId" : "8c016c4b58728b9dba07f0437b5fb2639e4c91de0f24f9dd1ba8d56f2df838ee",
+  "claimType" : "ALLOCATION",
+  "normalizedFields" : {
+    "cardId" : "citi-double-cash",
+    "category" : "GROCERIES",
+    "segmentIndex" : 0,
+    "spendUsd" : ""
+  }
+}, {
+  "citedEntities" : [ "amex-gold" ],
+  "citedEvidenceIds" : [ "8832ddf0c144e0308aa48f121fe527e4cd163963a57ea801034c43b61da2be38" ],
+  "citedNumbers" : [ "120", "250" ],
+  "claimId" : "cabec009a6cdb72fa68de32be2fb51711601d4fae6bdb3f21c22141cd7142e96",
+  "claimType" : "FEE_JUSTIFICATION",
+  "normalizedFields" : {
+    "cardId" : "amex-gold",
+    "creditsAssumedUsd" : "120",
+    "feeUsd" : "250"
+  }
+}, {
+  "citedEntities" : [ ],
+  "citedEvidenceIds" : [ "f425feca33ce71d3e480ee91eaf22a3213491323998cc6a0ba7a4e2b5f0021e4" ],
+  "citedNumbers" : [ "1.0" ],
+  "claimId" : "a73ac65b42310c4bba78ed72adf08cc8793e421881f5baf094780752fd4fd8bc",
+  "claimType" : "ASSUMPTION",
+  "normalizedFields" : {
+    "cppTableUsed" : "default-cpp.v1",
+    "creditsMode" : "on",
+    "penaltiesUsed" : "strict"
+  }
+} ]

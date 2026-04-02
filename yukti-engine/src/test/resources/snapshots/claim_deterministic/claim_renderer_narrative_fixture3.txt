@@ -1,0 +1,17 @@
+## Why these cards
+- amex-bcp wins OTHER: delta $50.00
+- amex-bcp wins GROCERIES: delta $180.00
+
+## Allocation
+| Category | Card |
+|----------|------|
+| GROCERIES | amex-bcp |
+| OTHER | amex-bcp |
+
+## Caps and switching
+
+## Fees and credits
+- amex-bcp: fee $95, credits $0
+
+## Assumptions
+- cpp: default-cpp.v1, penalties: strict, credits: on

@@ -1,0 +1,108 @@
+[ {
+  "citedEntities" : [ "OTHER", "citi-double-cash" ],
+  "citedEvidenceIds" : [ "1a9e9d43f587af962ef882f1bd08b61645b940252c0308abf72325ac12b7c0ca" ],
+  "citedNumbers" : [ "20.00" ],
+  "claimId" : "fee0c879303ab7978bddc5aceefff205c0c29173fa8b0fefb4402deb0c7d1c47",
+  "claimType" : "COMPARISON",
+  "normalizedFields" : {
+    "category" : "OTHER",
+    "deltaUsd" : "20.00",
+    "runnerUpId" : "",
+    "winnerId" : "citi-double-cash"
+  }
+}, {
+  "citedEntities" : [ "GROCERIES", "amex-bce", "amex-bcp" ],
+  "citedEvidenceIds" : [ "a956e207a565205ead87e4798f1e9168a95efab820dd8d1c064a6123b4d14f2b" ],
+  "citedNumbers" : [ "60.00" ],
+  "claimId" : "3940d41874532d05cac72d1227b81bf92b4828e8be26a07c8208af42c7715e8e",
+  "claimType" : "COMPARISON",
+  "normalizedFields" : {
+    "category" : "GROCERIES",
+    "deltaUsd" : "60.00",
+    "runnerUpId" : "amex-bce",
+    "winnerId" : "amex-bcp"
+  }
+}, {
+  "citedEntities" : [ "DINING", "amex-bcp" ],
+  "citedEvidenceIds" : [ "be612182b9ea281dea1b8740feb18e24e58229c8d5ffee85bf0d60bf18b6f917" ],
+  "citedNumbers" : [ "30.00" ],
+  "claimId" : "c322a51af83b7b4fc951e122059a9ea72348b5773594451fafe8d803f6837213",
+  "claimType" : "COMPARISON",
+  "normalizedFields" : {
+    "category" : "DINING",
+    "deltaUsd" : "30.00",
+    "runnerUpId" : "",
+    "winnerId" : "amex-bcp"
+  }
+}, {
+  "citedEntities" : [ "DINING", "amex-bcp" ],
+  "citedEvidenceIds" : [ ],
+  "citedNumbers" : [ ],
+  "claimId" : "959050b7089ceed50e17f6f3bd5b104d53a74cd16a689aac49c54ea608a569f9",
+  "claimType" : "ALLOCATION",
+  "normalizedFields" : {
+    "cardId" : "amex-bcp",
+    "category" : "DINING",
+    "segmentIndex" : 0,
+    "spendUsd" : ""
+  }
+}, {
+  "citedEntities" : [ "GROCERIES", "amex-bcp" ],
+  "citedEvidenceIds" : [ ],
+  "citedNumbers" : [ ],
+  "claimId" : "97d145cb8df518e46c2df06231d9ce9e20d05c0c7c12e733d68eba286145c58b",
+  "claimType" : "ALLOCATION",
+  "normalizedFields" : {
+    "cardId" : "amex-bcp",
+    "category" : "GROCERIES",
+    "segmentIndex" : 0,
+    "spendUsd" : ""
+  }
+}, {
+  "citedEntities" : [ "OTHER", "citi-double-cash" ],
+  "citedEvidenceIds" : [ ],
+  "citedNumbers" : [ ],
+  "claimId" : "3750959069141310f4ddb936ea7b08250f285a4b49cae76c7f10995ff7a38e64",
+  "claimType" : "ALLOCATION",
+  "normalizedFields" : {
+    "cardId" : "citi-double-cash",
+    "category" : "OTHER",
+    "segmentIndex" : 0,
+    "spendUsd" : ""
+  }
+}, {
+  "citedEntities" : [ "GROCERIES", "amex-bce", "amex-bcp" ],
+  "citedEvidenceIds" : [ "0057119638c62c184a8bf43cde1361cece5ed92077d9a2a000ca5134c6005fa7" ],
+  "citedNumbers" : [ "2000", "6000" ],
+  "claimId" : "468c1ec25d534e9a79232f1ab4ba5174faf45faf930d519e36788ba8265743ef",
+  "claimType" : "CAP_SWITCH",
+  "normalizedFields" : {
+    "capAmountUsd" : "6000",
+    "category" : "GROCERIES",
+    "fromCardId" : "amex-bcp",
+    "remainderUsd" : "2000",
+    "toCardId" : "amex-bce"
+  }
+}, {
+  "citedEntities" : [ "amex-bcp" ],
+  "citedEvidenceIds" : [ "72094cb0e48f2fc847d9edff007c410135c886182b568875b5b9bf627c1d70de" ],
+  "citedNumbers" : [ "0", "95" ],
+  "claimId" : "aa029397b31d8c526840df962c5b36d0bd32399309ac2f41fa6d82d8d095e33e",
+  "claimType" : "FEE_JUSTIFICATION",
+  "normalizedFields" : {
+    "cardId" : "amex-bcp",
+    "creditsAssumedUsd" : "0",
+    "feeUsd" : "95"
+  }
+}, {
+  "citedEntities" : [ ],
+  "citedEvidenceIds" : [ "f425feca33ce71d3e480ee91eaf22a3213491323998cc6a0ba7a4e2b5f0021e4" ],
+  "citedNumbers" : [ "1.0" ],
+  "claimId" : "a73ac65b42310c4bba78ed72adf08cc8793e421881f5baf094780752fd4fd8bc",
+  "claimType" : "ASSUMPTION",
+  "normalizedFields" : {
+    "cppTableUsed" : "default-cpp.v1",
+    "creditsMode" : "on",
+    "penaltiesUsed" : "strict"
+  }
+} ]

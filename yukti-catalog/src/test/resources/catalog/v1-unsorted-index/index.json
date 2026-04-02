@@ -1,0 +1,9 @@
+{
+  "catalogVersion": "v1",
+  "dslVersion": "carddsl.v0.1",
+  "generatedAtIso": "2026-02-16T00:00:00Z",
+  "cards": [
+    {"cardId": "z-card", "path": "cards/z-card.json", "sha256": "0919d99aeb8a771bf7a935da46cece2c5796d0b71beb1268617c5e9c9584e187"},
+    {"cardId": "a-card", "path": "cards/a-card.json", "sha256": "a6d240dc31d5d2f724f4a2110f357ae80c3585da976eb4b66e257018fecd2578"}
+  ]
+}

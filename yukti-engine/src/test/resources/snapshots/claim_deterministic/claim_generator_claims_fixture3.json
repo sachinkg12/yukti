@@ -1,0 +1,71 @@
+[ {
+  "citedEntities" : [ "OTHER", "amex-bcp" ],
+  "citedEvidenceIds" : [ "20ea431093d63dc0549eaaa5e1a3193623c1764f4fbafe49ab98df4510c79142" ],
+  "citedNumbers" : [ "50.00" ],
+  "claimId" : "241738207b6fe7e759eef7a58e66d267ed7acf992b9b3a685bb3efb01573559c",
+  "claimType" : "COMPARISON",
+  "normalizedFields" : {
+    "category" : "OTHER",
+    "deltaUsd" : "50.00",
+    "runnerUpId" : "",
+    "winnerId" : "amex-bcp"
+  }
+}, {
+  "citedEntities" : [ "GROCERIES", "amex-bcp" ],
+  "citedEvidenceIds" : [ "a956e207a565205ead87e4798f1e9168a95efab820dd8d1c064a6123b4d14f2b" ],
+  "citedNumbers" : [ "180.00" ],
+  "claimId" : "f17284ed0e50f6ab0259cd53c0d37031c300927e4723412c561f4ec98990f6cd",
+  "claimType" : "COMPARISON",
+  "normalizedFields" : {
+    "category" : "GROCERIES",
+    "deltaUsd" : "180.00",
+    "runnerUpId" : "",
+    "winnerId" : "amex-bcp"
+  }
+}, {
+  "citedEntities" : [ "GROCERIES", "amex-bcp" ],
+  "citedEvidenceIds" : [ ],
+  "citedNumbers" : [ ],
+  "claimId" : "97d145cb8df518e46c2df06231d9ce9e20d05c0c7c12e733d68eba286145c58b",
+  "claimType" : "ALLOCATION",
+  "normalizedFields" : {
+    "cardId" : "amex-bcp",
+    "category" : "GROCERIES",
+    "segmentIndex" : 0,
+    "spendUsd" : ""
+  }
+}, {
+  "citedEntities" : [ "OTHER", "amex-bcp" ],
+  "citedEvidenceIds" : [ ],
+  "citedNumbers" : [ ],
+  "claimId" : "e043d5177a47c769f267727958f89f3b78aca7507384b0430f0a19992202e249",
+  "claimType" : "ALLOCATION",
+  "normalizedFields" : {
+    "cardId" : "amex-bcp",
+    "category" : "OTHER",
+    "segmentIndex" : 0,
+    "spendUsd" : ""
+  }
+}, {
+  "citedEntities" : [ "amex-bcp" ],
+  "citedEvidenceIds" : [ "72094cb0e48f2fc847d9edff007c410135c886182b568875b5b9bf627c1d70de" ],
+  "citedNumbers" : [ "0", "95" ],
+  "claimId" : "aa029397b31d8c526840df962c5b36d0bd32399309ac2f41fa6d82d8d095e33e",
+  "claimType" : "FEE_JUSTIFICATION",
+  "normalizedFields" : {
+    "cardId" : "amex-bcp",
+    "creditsAssumedUsd" : "0",
+    "feeUsd" : "95"
+  }
+}, {
+  "citedEntities" : [ ],
+  "citedEvidenceIds" : [ "f425feca33ce71d3e480ee91eaf22a3213491323998cc6a0ba7a4e2b5f0021e4" ],
+  "citedNumbers" : [ "1.4" ],
+  "claimId" : "a73ac65b42310c4bba78ed72adf08cc8793e421881f5baf094780752fd4fd8bc",
+  "claimType" : "ASSUMPTION",
+  "normalizedFields" : {
+    "cppTableUsed" : "default-cpp.v1",
+    "creditsMode" : "on",
+    "penaltiesUsed" : "strict"
+  }
+} ]

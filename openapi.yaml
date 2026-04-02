@@ -1,0 +1,85 @@
+openapi: 3.0.3
+info:
+  title: Yukti Rewards Optimization API
+  version: 0.1.0
+
+paths:
+  /optimize:
+    post:
+      summary: Optimize portfolio for spend and goal
+      operationId: optimize
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OptimizeRequest'
+      responses:
+        '200':
+          description: Optimization result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OptimizeResponse'
+
+components:
+  schemas:
+    OptimizeRequest:
+      type: object
+      required: [spend, goal]
+      properties:
+        monthly:
+          type: boolean
+          default: false
+        spend:
+          type: object
+          additionalProperties:
+            type: number
+          example:
+            GROCERIES: 500
+            DINING: 250
+            GAS: 200
+            TRAVEL: 166
+            ONLINE: 100
+            OTHER: 416
+        goal:
+          type: string
+          enum: [CASHBACK, FLEX_POINTS, PROGRAM_POINTS]
+        maxCards:
+          type: integer
+          default: 3
+    OptimizeResponse:
+      type: object
+      properties:
+        portfolio:
+          type: array
+          items:
+            type: string
+        allocation:
+          type: object
+          additionalProperties:
+            type: string
+        breakdown:
+          type: object
+          properties:
+            earnValueUsd: { type: number }
+            creditsValueUsd: { type: number }
+            feesUsd: { type: number }
+            netUsd: { type: number }
+        switchingNotes:
+          type: array
+          items:
+            type: string
+        explanation:
+          type: object
+          properties:
+            narrative: { type: string }
+            evidenceBlocks:
+              type: array
+              items:
+                type: object
+                properties:
+                  type: { type: string }
+                  cardId: { type: string }
+                  category: { type: string }
+                  content: { type: string }

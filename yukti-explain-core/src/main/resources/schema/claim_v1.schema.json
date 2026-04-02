@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://yukti.io/schema/claim_v1.schema.json",
+  "title": "Claim",
+  "description": "Claim schema v1: machine-readable claim citing evidence. claimId = sha256(canonical(claimType, normalizedFields, citedEvidenceIds)).",
+  "type": "object",
+  "required": ["claimId", "claimType", "normalizedFields", "citedEvidenceIds", "citedEntities", "citedNumbers"],
+  "properties": {
+    "claimId": {
+      "type": "string",
+      "description": "Deterministic id: sha256(canonical JSON of claimType, normalizedFields, citedEvidenceIds)"
+    },
+    "claimType": {
+      "type": "string",
+      "enum": ["COMPARISON", "THRESHOLD", "ALLOCATION", "ASSUMPTION", "FEE_JUSTIFICATION", "CAP_SWITCH"],
+      "description": "Claim type; determines required evidence types per ClaimTypeRules"
+    },
+    "normalizedFields": {
+      "type": "object",
+      "description": "Type-specific normalized key-value payload; keys and values depend on claimType"
+    },
+    "citedEvidenceIds": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Sorted list of evidence node ids this claim cites"
+    },
+    "citedEntities": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Sorted list of entity strings (card ids, category names, currency codes)"
+    },
+    "citedNumbers": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Sorted list of normalized numeric strings"
+    },
+    "renderTemplateId": {
+      "type": "string",
+      "description": "Optional template id for rendering"
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,8 @@
+{
+  "catalogVersion": "v1",
+  "dslVersion": "carddsl.v0.1",
+  "generatedAtIso": "2026-02-16T00:00:00Z",
+  "cards": [
+    {"cardId": "test-card", "path": "cards/test-card.json", "sha256": "0000000000000000000000000000000000000000000000000000000000000000"}
+  ]
+}

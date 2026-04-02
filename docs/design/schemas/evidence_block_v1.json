@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://yukti.design/schemas/evidence_block_v1.json",
+  "title": "EvidenceBlockV1",
+  "description": "One evidence node in the evidence graph (portable protocol v1).",
+  "type": "object",
+  "required": ["evidenceId", "type", "cardId", "category", "content"],
+  "properties": {
+    "evidenceId": { "type": "string", "minLength": 1 },
+    "type": {
+      "type": "string",
+      "enum": [
+        "WINNER_BY_CATEGORY",
+        "CAP_HIT",
+        "FEE_BREAK_EVEN",
+        "RESULT_BREAKDOWN",
+        "PORTFOLIO_SUMMARY",
+        "ASSUMPTION",
+        "ALLOCATION_SEGMENT",
+        "RESULT"
+      ]
+    },
+    "cardId": { "type": "string" },
+    "category": { "type": "string" },
+    "content": { "type": "string" }
+  },
+  "additionalProperties": true
+}

@@ -1,0 +1,29 @@
+Net value: $405.00. Portfolio: 2 card(s). Goal: CASHBACK.
+
+| Category | Card |
+|----------|------|
+| GROCERIES | amex-bcp |
+| DINING | amex-bcp |
+| OTHER | citi-double-cash |
+
+
+## Why these cards
+- amex-bcp wins GROCERIES over amex-bce: delta $60.00
+
+## How to use them
+Allocate spend per category to the card shown in the table above.
+Stop reason: MAX_CARDS_REACHED: Reached maxCards=3
+
+## Caps and switching
+- amex-bcp: cap $6000.00 on GROCERIES, applied $6000.00, remaining $2000.00, fallback amex-bce
+
+## Fees and credits
+- amex-bcp: fee $95.00, credits $0.00, incremental earn $250.00, net delta $155.00
+
+## Narrative (AI)
+
+Net value: $405.00. Portfolio: 2 card(s). Goal: CASHBACK.
+
+
+- Goal: PROGRAM_POINTS, primary: AA_MILES, cpp: {AA_MILES=1.4, USD=1.0}, utilization: {amex-gold=0.7}
+

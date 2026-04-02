@@ -1,0 +1,1998 @@
+{
+  "version" : "1.0",
+  "valuationPolicies" : [ {
+    "centsPerUnit" : 100,
+    "currency" : "USD",
+    "id" : "usd-cashback",
+    "goal" : "CASHBACK"
+  }, {
+    "centsPerUnit" : 1.25,
+    "currency" : "CHASE_UR",
+    "id" : "chase-ur-flex",
+    "goal" : "FLEX_POINTS"
+  }, {
+    "centsPerUnit" : 1.2,
+    "currency" : "AMEX_MR",
+    "id" : "amex-mr-flex",
+    "goal" : "FLEX_POINTS"
+  }, {
+    "centsPerUnit" : 1.25,
+    "currency" : "CITI_TYP",
+    "id" : "citi-ty-flex",
+    "goal" : "FLEX_POINTS"
+  }, {
+    "centsPerUnit" : 1.0,
+    "currency" : "CAP1_VENTURE",
+    "id" : "cap1-venture-flex",
+    "goal" : "FLEX_POINTS"
+  }, {
+    "centsPerUnit" : 1.3,
+    "currency" : "AVIOS",
+    "id" : "avios-program",
+    "goal" : "PROGRAM_POINTS"
+  } ],
+  "cards" : [ {
+    "id" : "aeroplan-card",
+    "displayName" : "Aeroplan Credit Card",
+    "issuer" : "Chase",
+    "annualFee" : 95.0,
+    "statementCreditsAnnual" : 0.0,
+    "rules" : [ {
+      "category" : "GROCERIES",
+      "multiplier" : 3.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "AEROPLAN"
+    }, {
+      "category" : "DINING",
+      "multiplier" : 3.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "AEROPLAN"
+    }, {
+      "category" : "OTHER",
+      "multiplier" : 1.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "AEROPLAN"
+    } ]
+  }, {
+    "id" : "amazon-prime-visa",
+    "displayName" : "Amazon Prime Visa",
+    "issuer" : "Chase",
+    "annualFee" : 0.0,
+    "statementCreditsAnnual" : 0.0,
+    "rules" : [ {
+      "category" : "ONLINE",
+      "multiplier" : 0.05,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "USD"
+    }, {
+      "category" : "DINING",
+      "multiplier" : 0.02,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "USD"
+    }, {
+      "category" : "GAS",
+      "multiplier" : 0.02,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "USD"
+    }, {
+      "category" : "OTHER",
+      "multiplier" : 0.01,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "USD"
+    } ]
+  }, {
+    "id" : "amex-bce",
+    "displayName" : "Amex Blue Cash Everyday",
+    "issuer" : "Amex",
+    "annualFee" : 0.0,
+    "statementCreditsAnnual" : 0.0,
+    "rules" : [ {
+      "category" : "GROCERIES",
+      "multiplier" : 0.03,
+      "cap" : {
+        "period" : "ANNUAL",
+        "amountUsd" : 6000.0
+      },
+      "fallbackMultiplier" : 0.01,
+      "currency" : "USD"
+    }, {
+      "category" : "GAS",
+      "multiplier" : 0.03,
+      "cap" : {
+        "period" : "ANNUAL",
+        "amountUsd" : 6000.0
+      },
+      "fallbackMultiplier" : 0.01,
+      "currency" : "USD"
+    }, {
+      "category" : "ONLINE",
+      "multiplier" : 0.03,
+      "cap" : {
+        "period" : "ANNUAL",
+        "amountUsd" : 6000.0
+      },
+      "fallbackMultiplier" : 0.01,
+      "currency" : "USD"
+    }, {
+      "category" : "OTHER",
+      "multiplier" : 0.01,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "USD"
+    } ]
+  }, {
+    "id" : "amex-bcp",
+    "displayName" : "Amex Blue Cash Preferred",
+    "issuer" : "Amex",
+    "annualFee" : 95.0,
+    "statementCreditsAnnual" : 0.0,
+    "rules" : [ {
+      "category" : "GROCERIES",
+      "multiplier" : 0.06,
+      "cap" : {
+        "period" : "ANNUAL",
+        "amountUsd" : 6000.0
+      },
+      "fallbackMultiplier" : 0.01,
+      "currency" : "USD"
+    }, {
+      "category" : "ONLINE",
+      "multiplier" : 0.06,
+      "cap" : {
+        "period" : "ANNUAL",
+        "amountUsd" : 6000.0
+      },
+      "fallbackMultiplier" : 0.01,
+      "currency" : "USD"
+    }, {
+      "category" : "TRAVEL",
+      "multiplier" : 0.03,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "USD"
+    }, {
+      "category" : "GAS",
+      "multiplier" : 0.03,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "USD"
+    }, {
+      "category" : "DINING",
+      "multiplier" : 0.03,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "USD"
+    }, {
+      "category" : "OTHER",
+      "multiplier" : 0.01,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "USD"
+    } ]
+  }, {
+    "id" : "amex-everyday",
+    "displayName" : "Amex Everyday",
+    "issuer" : "Amex",
+    "annualFee" : 0.0,
+    "statementCreditsAnnual" : 0.0,
+    "rules" : [ {
+      "category" : "GROCERIES",
+      "multiplier" : 2.0,
+      "cap" : {
+        "period" : "ANNUAL",
+        "amountUsd" : 6000.0
+      },
+      "fallbackMultiplier" : 1.0,
+      "currency" : "AMEX_MR"
+    }, {
+      "category" : "OTHER",
+      "multiplier" : 1.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "AMEX_MR"
+    } ]
+  }, {
+    "id" : "amex-everyday-preferred",
+    "displayName" : "Amex EveryDay Preferred",
+    "issuer" : "Amex",
+    "annualFee" : 95.0,
+    "statementCreditsAnnual" : 0.0,
+    "rules" : [ {
+      "category" : "GROCERIES",
+      "multiplier" : 3.0,
+      "cap" : {
+        "period" : "ANNUAL",
+        "amountUsd" : 6000.0
+      },
+      "fallbackMultiplier" : 1.0,
+      "currency" : "AMEX_MR"
+    }, {
+      "category" : "GAS",
+      "multiplier" : 2.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "AMEX_MR"
+    }, {
+      "category" : "OTHER",
+      "multiplier" : 1.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "AMEX_MR"
+    } ]
+  }, {
+    "id" : "amex-gold",
+    "displayName" : "American Express Gold Card",
+    "issuer" : "Amex",
+    "annualFee" : 325.0,
+    "statementCreditsAnnual" : 240.0,
+    "rules" : [ {
+      "category" : "GROCERIES",
+      "multiplier" : 4.0,
+      "cap" : {
+        "period" : "ANNUAL",
+        "amountUsd" : 25000.0
+      },
+      "fallbackMultiplier" : 1.0,
+      "currency" : "AMEX_MR"
+    }, {
+      "category" : "DINING",
+      "multiplier" : 4.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "AMEX_MR"
+    }, {
+      "category" : "TRAVEL",
+      "multiplier" : 3.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "AMEX_MR"
+    }, {
+      "category" : "OTHER",
+      "multiplier" : 1.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "AMEX_MR"
+    } ]
+  }, {
+    "id" : "amex-green",
+    "displayName" : "American Express Green Card",
+    "issuer" : "Amex",
+    "annualFee" : 150.0,
+    "statementCreditsAnnual" : 0.0,
+    "rules" : [ {
+      "category" : "TRAVEL",
+      "multiplier" : 3.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "AMEX_MR"
+    }, {
+      "category" : "DINING",
+      "multiplier" : 3.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "AMEX_MR"
+    }, {
+      "category" : "OTHER",
+      "multiplier" : 1.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "AMEX_MR"
+    } ]
+  }, {
+    "id" : "amex-platinum",
+    "displayName" : "The Platinum Card from American Express",
+    "issuer" : "Amex",
+    "annualFee" : 895.0,
+    "statementCreditsAnnual" : 260.0,
+    "rules" : [ {
+      "category" : "TRAVEL",
+      "multiplier" : 5.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "AMEX_MR"
+    }, {
+      "category" : "OTHER",
+      "multiplier" : 1.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "AMEX_MR"
+    } ]
+  }, {
+    "id" : "barclays-aa-aviator",
+    "displayName" : "Barclays AAdvantage Aviator Red",
+    "issuer" : "Barclays",
+    "annualFee" : 99.0,
+    "statementCreditsAnnual" : 0.0,
+    "rules" : [ {
+      "category" : "TRAVEL",
+      "multiplier" : 2.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "AA_MILES"
+    }, {
+      "category" : "DINING",
+      "multiplier" : 2.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "AA_MILES"
+    }, {
+      "category" : "OTHER",
+      "multiplier" : 1.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "AA_MILES"
+    } ]
+  }, {
+    "id" : "bilt-mastercard",
+    "displayName" : "Bilt Mastercard",
+    "issuer" : "Wells Fargo",
+    "annualFee" : 0.0,
+    "statementCreditsAnnual" : 0.0,
+    "rules" : [ {
+      "category" : "DINING",
+      "multiplier" : 3.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "BILT_POINTS"
+    }, {
+      "category" : "TRAVEL",
+      "multiplier" : 2.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "BILT_POINTS"
+    }, {
+      "category" : "OTHER",
+      "multiplier" : 1.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "BILT_POINTS"
+    } ]
+  }, {
+    "id" : "boa-customized-cash",
+    "displayName" : "Bank of America Customized Cash Rewards",
+    "issuer" : "Bank of America",
+    "annualFee" : 0.0,
+    "statementCreditsAnnual" : 0.0,
+    "rules" : [ {
+      "category" : "GROCERIES",
+      "multiplier" : 0.03,
+      "cap" : {
+        "period" : "ANNUAL",
+        "amountUsd" : 10000.0
+      },
+      "fallbackMultiplier" : 0.01,
+      "currency" : "USD"
+    }, {
+      "category" : "OTHER",
+      "multiplier" : 0.01,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "USD"
+    } ]
+  }, {
+    "id" : "boa-premium-rewards",
+    "displayName" : "Bank of America Premium Rewards",
+    "issuer" : "Bank of America",
+    "annualFee" : 95.0,
+    "statementCreditsAnnual" : 0.0,
+    "rules" : [ {
+      "category" : "TRAVEL",
+      "multiplier" : 0.035,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "USD"
+    }, {
+      "category" : "DINING",
+      "multiplier" : 0.035,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "USD"
+    }, {
+      "category" : "OTHER",
+      "multiplier" : 0.015,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "USD"
+    } ]
+  }, {
+    "id" : "boa-unlimited-cash",
+    "displayName" : "Bank of America Unlimited Cash Rewards",
+    "issuer" : "Bank of America",
+    "annualFee" : 0.0,
+    "statementCreditsAnnual" : 0.0,
+    "rules" : [ {
+      "category" : "GROCERIES",
+      "multiplier" : 0.015,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "USD"
+    }, {
+      "category" : "DINING",
+      "multiplier" : 0.015,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "USD"
+    }, {
+      "category" : "GAS",
+      "multiplier" : 0.015,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "USD"
+    }, {
+      "category" : "TRAVEL",
+      "multiplier" : 0.015,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "USD"
+    }, {
+      "category" : "ONLINE",
+      "multiplier" : 0.015,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "USD"
+    }, {
+      "category" : "OTHER",
+      "multiplier" : 0.015,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "USD"
+    } ]
+  }, {
+    "id" : "cap1-quicksilver",
+    "displayName" : "Capital One Quicksilver",
+    "issuer" : "Capital One",
+    "annualFee" : 0.0,
+    "statementCreditsAnnual" : 0.0,
+    "rules" : [ {
+      "category" : "GROCERIES",
+      "multiplier" : 0.015,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "USD"
+    }, {
+      "category" : "DINING",
+      "multiplier" : 0.015,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "USD"
+    }, {
+      "category" : "GAS",
+      "multiplier" : 0.015,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "USD"
+    }, {
+      "category" : "TRAVEL",
+      "multiplier" : 0.015,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "USD"
+    }, {
+      "category" : "ONLINE",
+      "multiplier" : 0.015,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "USD"
+    }, {
+      "category" : "OTHER",
+      "multiplier" : 0.015,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "USD"
+    } ]
+  }, {
+    "id" : "cap1-savor",
+    "displayName" : "Capital One Savor Rewards",
+    "issuer" : "Capital One",
+    "annualFee" : 95.0,
+    "statementCreditsAnnual" : 0.0,
+    "rules" : [ {
+      "category" : "DINING",
+      "multiplier" : 4.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "CAP1_VENTURE"
+    }, {
+      "category" : "GROCERIES",
+      "multiplier" : 3.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "CAP1_VENTURE"
+    }, {
+      "category" : "ONLINE",
+      "multiplier" : 4.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "CAP1_VENTURE"
+    }, {
+      "category" : "OTHER",
+      "multiplier" : 1.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "CAP1_VENTURE"
+    } ]
+  }, {
+    "id" : "cap1-savorone",
+    "displayName" : "Capital One SavorOne",
+    "issuer" : "Capital One",
+    "annualFee" : 0.0,
+    "statementCreditsAnnual" : 0.0,
+    "rules" : [ {
+      "category" : "DINING",
+      "multiplier" : 3.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "CAP1_VENTURE"
+    }, {
+      "category" : "GROCERIES",
+      "multiplier" : 3.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "CAP1_VENTURE"
+    }, {
+      "category" : "OTHER",
+      "multiplier" : 1.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "CAP1_VENTURE"
+    } ]
+  }, {
+    "id" : "cap1-venture",
+    "displayName" : "Capital One Venture Rewards",
+    "issuer" : "Capital One",
+    "annualFee" : 95.0,
+    "statementCreditsAnnual" : 0.0,
+    "rules" : [ {
+      "category" : "TRAVEL",
+      "multiplier" : 5.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "CAP1_VENTURE"
+    }, {
+      "category" : "DINING",
+      "multiplier" : 2.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "CAP1_VENTURE"
+    }, {
+      "category" : "OTHER",
+      "multiplier" : 2.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "CAP1_VENTURE"
+    } ]
+  }, {
+    "id" : "cap1-venture-x",
+    "displayName" : "Capital One Venture X Rewards",
+    "issuer" : "Capital One",
+    "annualFee" : 395.0,
+    "statementCreditsAnnual" : 300.0,
+    "rules" : [ {
+      "category" : "TRAVEL",
+      "multiplier" : 10.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "CAP1_VENTURE"
+    }, {
+      "category" : "DINING",
+      "multiplier" : 2.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "CAP1_VENTURE"
+    }, {
+      "category" : "OTHER",
+      "multiplier" : 2.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "CAP1_VENTURE"
+    } ]
+  }, {
+    "id" : "cap1-ventureone",
+    "displayName" : "Capital One VentureOne",
+    "issuer" : "Capital One",
+    "annualFee" : 0.0,
+    "statementCreditsAnnual" : 0.0,
+    "rules" : [ {
+      "category" : "GROCERIES",
+      "multiplier" : 1.25,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "CAP1_VENTURE"
+    }, {
+      "category" : "DINING",
+      "multiplier" : 1.25,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "CAP1_VENTURE"
+    }, {
+      "category" : "GAS",
+      "multiplier" : 1.25,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "CAP1_VENTURE"
+    }, {
+      "category" : "TRAVEL",
+      "multiplier" : 1.25,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "CAP1_VENTURE"
+    }, {
+      "category" : "ONLINE",
+      "multiplier" : 1.25,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "CAP1_VENTURE"
+    }, {
+      "category" : "OTHER",
+      "multiplier" : 1.25,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "CAP1_VENTURE"
+    } ]
+  }, {
+    "id" : "chase-aer-lingus-visa",
+    "displayName" : "Aer Lingus Visa Signature",
+    "issuer" : "Chase",
+    "annualFee" : 95.0,
+    "statementCreditsAnnual" : 0.0,
+    "rules" : [ {
+      "category" : "TRAVEL",
+      "multiplier" : 3.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "AVIOS"
+    }, {
+      "category" : "DINING",
+      "multiplier" : 2.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "AVIOS"
+    }, {
+      "category" : "OTHER",
+      "multiplier" : 1.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "AVIOS"
+    } ]
+  }, {
+    "id" : "chase-ba-visa",
+    "displayName" : "British Airways Visa Signature",
+    "issuer" : "Chase",
+    "annualFee" : 95.0,
+    "statementCreditsAnnual" : 0.0,
+    "rules" : [ {
+      "category" : "TRAVEL",
+      "multiplier" : 3.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "AVIOS"
+    }, {
+      "category" : "DINING",
+      "multiplier" : 2.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "AVIOS"
+    }, {
+      "category" : "OTHER",
+      "multiplier" : 1.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "AVIOS"
+    } ]
+  }, {
+    "id" : "chase-freedom-flex",
+    "displayName" : "Chase Freedom Flex",
+    "issuer" : "Chase",
+    "annualFee" : 0.0,
+    "statementCreditsAnnual" : 0.0,
+    "rules" : [ {
+      "category" : "GROCERIES",
+      "multiplier" : 5.0,
+      "cap" : {
+        "period" : "ANNUAL",
+        "amountUsd" : 12000.0
+      },
+      "fallbackMultiplier" : 1.0,
+      "currency" : "CHASE_UR"
+    }, {
+      "category" : "TRAVEL",
+      "multiplier" : 5.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "CHASE_UR"
+    }, {
+      "category" : "DINING",
+      "multiplier" : 3.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "CHASE_UR"
+    }, {
+      "category" : "OTHER",
+      "multiplier" : 1.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "CHASE_UR"
+    } ]
+  }, {
+    "id" : "chase-freedom-unlimited",
+    "displayName" : "Chase Freedom Unlimited",
+    "issuer" : "Chase",
+    "annualFee" : 0.0,
+    "statementCreditsAnnual" : 0.0,
+    "rules" : [ {
+      "category" : "DINING",
+      "multiplier" : 3.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "CHASE_UR"
+    }, {
+      "category" : "OTHER",
+      "multiplier" : 1.5,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "CHASE_UR"
+    } ]
+  }, {
+    "id" : "chase-iberia-visa",
+    "displayName" : "Iberia Visa Signature",
+    "issuer" : "Chase",
+    "annualFee" : 95.0,
+    "statementCreditsAnnual" : 0.0,
+    "rules" : [ {
+      "category" : "TRAVEL",
+      "multiplier" : 3.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "AVIOS"
+    }, {
+      "category" : "DINING",
+      "multiplier" : 2.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "AVIOS"
+    }, {
+      "category" : "OTHER",
+      "multiplier" : 1.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "AVIOS"
+    } ]
+  }, {
+    "id" : "chase-sapphire-preferred",
+    "displayName" : "Chase Sapphire Preferred",
+    "issuer" : "Chase",
+    "annualFee" : 95.0,
+    "statementCreditsAnnual" : 50.0,
+    "rules" : [ {
+      "category" : "TRAVEL",
+      "multiplier" : 5.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "CHASE_UR"
+    }, {
+      "category" : "DINING",
+      "multiplier" : 3.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "CHASE_UR"
+    }, {
+      "category" : "ONLINE",
+      "multiplier" : 3.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "CHASE_UR"
+    }, {
+      "category" : "OTHER",
+      "multiplier" : 1.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "CHASE_UR"
+    } ]
+  }, {
+    "id" : "chase-sapphire-reserve",
+    "displayName" : "Chase Sapphire Reserve",
+    "issuer" : "Chase",
+    "annualFee" : 795.0,
+    "statementCreditsAnnual" : 300.0,
+    "rules" : [ {
+      "category" : "TRAVEL",
+      "multiplier" : 5.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "CHASE_UR"
+    }, {
+      "category" : "DINING",
+      "multiplier" : 3.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "CHASE_UR"
+    }, {
+      "category" : "ONLINE",
+      "multiplier" : 3.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "CHASE_UR"
+    }, {
+      "category" : "OTHER",
+      "multiplier" : 1.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "CHASE_UR"
+    } ]
+  }, {
+    "id" : "citi-aa-executive",
+    "displayName" : "Citi AAdvantage Executive World Elite",
+    "issuer" : "Citi",
+    "annualFee" : 595.0,
+    "statementCreditsAnnual" : 0.0,
+    "rules" : [ {
+      "category" : "TRAVEL",
+      "multiplier" : 4.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "AA_MILES"
+    }, {
+      "category" : "OTHER",
+      "multiplier" : 1.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "AA_MILES"
+    } ]
+  }, {
+    "id" : "citi-aa-globe",
+    "displayName" : "Citi AAdvantage MileUp Globe",
+    "issuer" : "Citi",
+    "annualFee" : 350.0,
+    "statementCreditsAnnual" : 0.0,
+    "rules" : [ {
+      "category" : "TRAVEL",
+      "multiplier" : 3.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "AA_MILES"
+    }, {
+      "category" : "DINING",
+      "multiplier" : 2.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "AA_MILES"
+    }, {
+      "category" : "OTHER",
+      "multiplier" : 1.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "AA_MILES"
+    } ]
+  }, {
+    "id" : "citi-aa-platinum",
+    "displayName" : "Citi AAdvantage Platinum",
+    "issuer" : "Citi",
+    "annualFee" : 99.0,
+    "statementCreditsAnnual" : 0.0,
+    "rules" : [ {
+      "category" : "TRAVEL",
+      "multiplier" : 2.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "AA_MILES"
+    }, {
+      "category" : "GAS",
+      "multiplier" : 2.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "AA_MILES"
+    }, {
+      "category" : "GROCERIES",
+      "multiplier" : 2.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "AA_MILES"
+    }, {
+      "category" : "OTHER",
+      "multiplier" : 1.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "AA_MILES"
+    } ]
+  }, {
+    "id" : "citi-custom-cash",
+    "displayName" : "Citi Custom Cash",
+    "issuer" : "Citi",
+    "annualFee" : 0.0,
+    "statementCreditsAnnual" : 0.0,
+    "rules" : [ {
+      "category" : "GROCERIES",
+      "multiplier" : 5.0,
+      "cap" : {
+        "period" : "ANNUAL",
+        "amountUsd" : 6000.0
+      },
+      "fallbackMultiplier" : 1.0,
+      "currency" : "CITI_TYP"
+    }, {
+      "category" : "DINING",
+      "multiplier" : 2.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "CITI_TYP"
+    }, {
+      "category" : "OTHER",
+      "multiplier" : 1.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "CITI_TYP"
+    } ]
+  }, {
+    "id" : "citi-double-cash",
+    "displayName" : "Citi Double Cash",
+    "issuer" : "Citi",
+    "annualFee" : 0.0,
+    "statementCreditsAnnual" : 0.0,
+    "rules" : [ {
+      "category" : "OTHER",
+      "multiplier" : 0.02,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "USD"
+    } ]
+  }, {
+    "id" : "citi-premier",
+    "displayName" : "Citi Premier",
+    "issuer" : "Citi",
+    "annualFee" : 95.0,
+    "statementCreditsAnnual" : 0.0,
+    "rules" : [ {
+      "category" : "GROCERIES",
+      "multiplier" : 3.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "CITI_TYP"
+    }, {
+      "category" : "DINING",
+      "multiplier" : 3.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "CITI_TYP"
+    }, {
+      "category" : "GAS",
+      "multiplier" : 3.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "CITI_TYP"
+    }, {
+      "category" : "TRAVEL",
+      "multiplier" : 3.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "CITI_TYP"
+    }, {
+      "category" : "OTHER",
+      "multiplier" : 1.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "CITI_TYP"
+    } ]
+  }, {
+    "id" : "citi-rewards-plus",
+    "displayName" : "Citi Rewards+ Card",
+    "issuer" : "Citi",
+    "annualFee" : 0.0,
+    "statementCreditsAnnual" : 0.0,
+    "rules" : [ {
+      "category" : "GROCERIES",
+      "multiplier" : 2.0,
+      "cap" : {
+        "period" : "ANNUAL",
+        "amountUsd" : 6000.0
+      },
+      "fallbackMultiplier" : 1.0,
+      "currency" : "CITI_TYP"
+    }, {
+      "category" : "GAS",
+      "multiplier" : 2.0,
+      "cap" : {
+        "period" : "ANNUAL",
+        "amountUsd" : 6000.0
+      },
+      "fallbackMultiplier" : 1.0,
+      "currency" : "CITI_TYP"
+    }, {
+      "category" : "OTHER",
+      "multiplier" : 1.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "CITI_TYP"
+    } ]
+  }, {
+    "id" : "citi-strata",
+    "displayName" : "Citi Strata",
+    "issuer" : "Citi",
+    "annualFee" : 0.0,
+    "statementCreditsAnnual" : 0.0,
+    "rules" : [ {
+      "category" : "GROCERIES",
+      "multiplier" : 3.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "CITI_TYP"
+    }, {
+      "category" : "GAS",
+      "multiplier" : 3.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "CITI_TYP"
+    }, {
+      "category" : "DINING",
+      "multiplier" : 2.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "CITI_TYP"
+    }, {
+      "category" : "OTHER",
+      "multiplier" : 1.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "CITI_TYP"
+    } ]
+  }, {
+    "id" : "citi-strata-elite",
+    "displayName" : "Citi Strata Elite",
+    "issuer" : "Citi",
+    "annualFee" : 595.0,
+    "statementCreditsAnnual" : 0.0,
+    "rules" : [ {
+      "category" : "DINING",
+      "multiplier" : 6.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "CITI_TYP"
+    }, {
+      "category" : "OTHER",
+      "multiplier" : 1.5,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "CITI_TYP"
+    } ]
+  }, {
+    "id" : "citi-strata-premier",
+    "displayName" : "Citi Strata Premier",
+    "issuer" : "Citi",
+    "annualFee" : 95.0,
+    "statementCreditsAnnual" : 0.0,
+    "rules" : [ {
+      "category" : "TRAVEL",
+      "multiplier" : 3.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "CITI_TYP"
+    }, {
+      "category" : "DINING",
+      "multiplier" : 3.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "CITI_TYP"
+    }, {
+      "category" : "GAS",
+      "multiplier" : 3.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "CITI_TYP"
+    }, {
+      "category" : "OTHER",
+      "multiplier" : 1.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "CITI_TYP"
+    } ]
+  }, {
+    "id" : "costco-visa",
+    "displayName" : "Costco Anywhere Visa",
+    "issuer" : "Citi",
+    "annualFee" : 0.0,
+    "statementCreditsAnnual" : 0.0,
+    "rules" : [ {
+      "category" : "GAS",
+      "multiplier" : 0.04,
+      "cap" : {
+        "period" : "ANNUAL",
+        "amountUsd" : 7000.0
+      },
+      "fallbackMultiplier" : 0.01,
+      "currency" : "USD"
+    }, {
+      "category" : "DINING",
+      "multiplier" : 0.03,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "USD"
+    }, {
+      "category" : "TRAVEL",
+      "multiplier" : 0.03,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "USD"
+    }, {
+      "category" : "OTHER",
+      "multiplier" : 0.01,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "USD"
+    } ]
+  }, {
+    "id" : "delta-blue",
+    "displayName" : "Delta SkyMiles Blue Card",
+    "issuer" : "Amex",
+    "annualFee" : 0.0,
+    "statementCreditsAnnual" : 0.0,
+    "rules" : [ {
+      "category" : "DINING",
+      "multiplier" : 2.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "DELTA_SKYMILES"
+    }, {
+      "category" : "OTHER",
+      "multiplier" : 1.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "DELTA_SKYMILES"
+    } ]
+  }, {
+    "id" : "delta-gold-amex",
+    "displayName" : "Delta SkyMiles Gold Card",
+    "issuer" : "Amex",
+    "annualFee" : 150.0,
+    "statementCreditsAnnual" : 0.0,
+    "rules" : [ {
+      "category" : "DINING",
+      "multiplier" : 2.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "DELTA_SKYMILES"
+    }, {
+      "category" : "GROCERIES",
+      "multiplier" : 2.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "DELTA_SKYMILES"
+    }, {
+      "category" : "OTHER",
+      "multiplier" : 1.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "DELTA_SKYMILES"
+    } ]
+  }, {
+    "id" : "delta-platinum-amex",
+    "displayName" : "Delta SkyMiles Platinum Card",
+    "issuer" : "Amex",
+    "annualFee" : 350.0,
+    "statementCreditsAnnual" : 0.0,
+    "rules" : [ {
+      "category" : "TRAVEL",
+      "multiplier" : 3.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "DELTA_SKYMILES"
+    }, {
+      "category" : "DINING",
+      "multiplier" : 2.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "DELTA_SKYMILES"
+    }, {
+      "category" : "GROCERIES",
+      "multiplier" : 2.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "DELTA_SKYMILES"
+    }, {
+      "category" : "OTHER",
+      "multiplier" : 1.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "DELTA_SKYMILES"
+    } ]
+  }, {
+    "id" : "delta-reserve",
+    "displayName" : "Delta SkyMiles Reserve Card",
+    "issuer" : "Amex",
+    "annualFee" : 650.0,
+    "statementCreditsAnnual" : 0.0,
+    "rules" : [ {
+      "category" : "TRAVEL",
+      "multiplier" : 3.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "DELTA_SKYMILES"
+    }, {
+      "category" : "OTHER",
+      "multiplier" : 1.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "DELTA_SKYMILES"
+    } ]
+  }, {
+    "id" : "discover-it-cash",
+    "displayName" : "Discover it Cash Back",
+    "issuer" : "Discover",
+    "annualFee" : 0.0,
+    "statementCreditsAnnual" : 0.0,
+    "rules" : [ {
+      "category" : "GROCERIES",
+      "multiplier" : 0.05,
+      "cap" : {
+        "period" : "ANNUAL",
+        "amountUsd" : 6000.0
+      },
+      "fallbackMultiplier" : 0.01,
+      "currency" : "USD"
+    }, {
+      "category" : "OTHER",
+      "multiplier" : 0.01,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "USD"
+    } ]
+  }, {
+    "id" : "hilton-aspire",
+    "displayName" : "Hilton Honors Aspire Card",
+    "issuer" : "Amex",
+    "annualFee" : 550.0,
+    "statementCreditsAnnual" : 325.0,
+    "rules" : [ {
+      "category" : "TRAVEL",
+      "multiplier" : 7.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "HILTON_POINTS"
+    }, {
+      "category" : "DINING",
+      "multiplier" : 7.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "HILTON_POINTS"
+    }, {
+      "category" : "OTHER",
+      "multiplier" : 3.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "HILTON_POINTS"
+    } ]
+  }, {
+    "id" : "hilton-base",
+    "displayName" : "Hilton Honors Card",
+    "issuer" : "Amex",
+    "annualFee" : 0.0,
+    "statementCreditsAnnual" : 0.0,
+    "rules" : [ {
+      "category" : "DINING",
+      "multiplier" : 5.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "HILTON_POINTS"
+    }, {
+      "category" : "GROCERIES",
+      "multiplier" : 5.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "HILTON_POINTS"
+    }, {
+      "category" : "GAS",
+      "multiplier" : 5.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "HILTON_POINTS"
+    }, {
+      "category" : "OTHER",
+      "multiplier" : 3.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "HILTON_POINTS"
+    } ]
+  }, {
+    "id" : "hilton-surpass",
+    "displayName" : "Hilton Honors Surpass Card",
+    "issuer" : "Amex",
+    "annualFee" : 150.0,
+    "statementCreditsAnnual" : 0.0,
+    "rules" : [ {
+      "category" : "DINING",
+      "multiplier" : 6.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "HILTON_POINTS"
+    }, {
+      "category" : "GROCERIES",
+      "multiplier" : 6.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "HILTON_POINTS"
+    }, {
+      "category" : "GAS",
+      "multiplier" : 6.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "HILTON_POINTS"
+    }, {
+      "category" : "OTHER",
+      "multiplier" : 3.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "HILTON_POINTS"
+    } ]
+  }, {
+    "id" : "hyatt-world",
+    "displayName" : "World of Hyatt Credit Card",
+    "issuer" : "Chase",
+    "annualFee" : 95.0,
+    "statementCreditsAnnual" : 0.0,
+    "rules" : [ {
+      "category" : "TRAVEL",
+      "multiplier" : 4.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "HYATT_POINTS"
+    }, {
+      "category" : "DINING",
+      "multiplier" : 2.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "HYATT_POINTS"
+    }, {
+      "category" : "OTHER",
+      "multiplier" : 1.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "HYATT_POINTS"
+    } ]
+  }, {
+    "id" : "ihg-premier",
+    "displayName" : "IHG One Rewards Premier",
+    "issuer" : "Chase",
+    "annualFee" : 99.0,
+    "statementCreditsAnnual" : 0.0,
+    "rules" : [ {
+      "category" : "TRAVEL",
+      "multiplier" : 5.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "IHG_POINTS"
+    }, {
+      "category" : "DINING",
+      "multiplier" : 5.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "IHG_POINTS"
+    }, {
+      "category" : "GAS",
+      "multiplier" : 5.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "IHG_POINTS"
+    }, {
+      "category" : "OTHER",
+      "multiplier" : 3.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "IHG_POINTS"
+    } ]
+  }, {
+    "id" : "ihg-traveler",
+    "displayName" : "IHG One Rewards Traveler",
+    "issuer" : "Chase",
+    "annualFee" : 0.0,
+    "statementCreditsAnnual" : 0.0,
+    "rules" : [ {
+      "category" : "DINING",
+      "multiplier" : 3.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "IHG_POINTS"
+    }, {
+      "category" : "GAS",
+      "multiplier" : 3.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "IHG_POINTS"
+    }, {
+      "category" : "OTHER",
+      "multiplier" : 2.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "IHG_POINTS"
+    } ]
+  }, {
+    "id" : "jetblue-plus",
+    "displayName" : "JetBlue Plus Card",
+    "issuer" : "Barclays",
+    "annualFee" : 99.0,
+    "statementCreditsAnnual" : 0.0,
+    "rules" : [ {
+      "category" : "TRAVEL",
+      "multiplier" : 6.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "JETBLUE_POINTS"
+    }, {
+      "category" : "DINING",
+      "multiplier" : 2.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "JETBLUE_POINTS"
+    }, {
+      "category" : "GROCERIES",
+      "multiplier" : 2.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "JETBLUE_POINTS"
+    }, {
+      "category" : "OTHER",
+      "multiplier" : 1.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "JETBLUE_POINTS"
+    } ]
+  }, {
+    "id" : "marriott-bevy",
+    "displayName" : "Marriott Bonvoy Bevy",
+    "issuer" : "Amex",
+    "annualFee" : 250.0,
+    "statementCreditsAnnual" : 0.0,
+    "rules" : [ {
+      "category" : "TRAVEL",
+      "multiplier" : 6.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "MARRIOTT_POINTS"
+    }, {
+      "category" : "DINING",
+      "multiplier" : 4.0,
+      "cap" : {
+        "period" : "ANNUAL",
+        "amountUsd" : 15000.0
+      },
+      "fallbackMultiplier" : 2.0,
+      "currency" : "MARRIOTT_POINTS"
+    }, {
+      "category" : "GROCERIES",
+      "multiplier" : 4.0,
+      "cap" : {
+        "period" : "ANNUAL",
+        "amountUsd" : 15000.0
+      },
+      "fallbackMultiplier" : 2.0,
+      "currency" : "MARRIOTT_POINTS"
+    }, {
+      "category" : "OTHER",
+      "multiplier" : 2.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "MARRIOTT_POINTS"
+    } ]
+  }, {
+    "id" : "marriott-bold",
+    "displayName" : "Marriott Bonvoy Bold",
+    "issuer" : "Chase",
+    "annualFee" : 0.0,
+    "statementCreditsAnnual" : 0.0,
+    "rules" : [ {
+      "category" : "GROCERIES",
+      "multiplier" : 2.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "MARRIOTT_POINTS"
+    }, {
+      "category" : "OTHER",
+      "multiplier" : 1.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "MARRIOTT_POINTS"
+    } ]
+  }, {
+    "id" : "marriott-boundless",
+    "displayName" : "Marriott Bonvoy Boundless",
+    "issuer" : "Chase",
+    "annualFee" : 95.0,
+    "statementCreditsAnnual" : 0.0,
+    "rules" : [ {
+      "category" : "GROCERIES",
+      "multiplier" : 6.0,
+      "cap" : {
+        "period" : "ANNUAL",
+        "amountUsd" : 6000.0
+      },
+      "fallbackMultiplier" : 2.0,
+      "currency" : "MARRIOTT_POINTS"
+    }, {
+      "category" : "GAS",
+      "multiplier" : 6.0,
+      "cap" : {
+        "period" : "ANNUAL",
+        "amountUsd" : 6000.0
+      },
+      "fallbackMultiplier" : 2.0,
+      "currency" : "MARRIOTT_POINTS"
+    }, {
+      "category" : "DINING",
+      "multiplier" : 6.0,
+      "cap" : {
+        "period" : "ANNUAL",
+        "amountUsd" : 6000.0
+      },
+      "fallbackMultiplier" : 2.0,
+      "currency" : "MARRIOTT_POINTS"
+    }, {
+      "category" : "OTHER",
+      "multiplier" : 2.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "MARRIOTT_POINTS"
+    } ]
+  }, {
+    "id" : "marriott-brilliant",
+    "displayName" : "Marriott Bonvoy Brilliant",
+    "issuer" : "Amex",
+    "annualFee" : 650.0,
+    "statementCreditsAnnual" : 300.0,
+    "rules" : [ {
+      "category" : "TRAVEL",
+      "multiplier" : 6.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "MARRIOTT_POINTS"
+    }, {
+      "category" : "DINING",
+      "multiplier" : 3.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "MARRIOTT_POINTS"
+    }, {
+      "category" : "GROCERIES",
+      "multiplier" : 3.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "MARRIOTT_POINTS"
+    }, {
+      "category" : "OTHER",
+      "multiplier" : 2.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "MARRIOTT_POINTS"
+    } ]
+  }, {
+    "id" : "qatar-privilege-infinite",
+    "displayName" : "Qatar Airways Privilege Club Infinite",
+    "issuer" : "Cardless",
+    "annualFee" : 350.0,
+    "statementCreditsAnnual" : 0.0,
+    "rules" : [ {
+      "category" : "TRAVEL",
+      "multiplier" : 3.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "AVIOS"
+    }, {
+      "category" : "DINING",
+      "multiplier" : 2.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "AVIOS"
+    }, {
+      "category" : "OTHER",
+      "multiplier" : 1.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "AVIOS"
+    } ]
+  }, {
+    "id" : "qatar-privilege-signature",
+    "displayName" : "Qatar Airways Privilege Club Signature",
+    "issuer" : "Cardless",
+    "annualFee" : 0.0,
+    "statementCreditsAnnual" : 0.0,
+    "rules" : [ {
+      "category" : "TRAVEL",
+      "multiplier" : 2.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "AVIOS"
+    }, {
+      "category" : "DINING",
+      "multiplier" : 2.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "AVIOS"
+    }, {
+      "category" : "OTHER",
+      "multiplier" : 1.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "AVIOS"
+    } ]
+  }, {
+    "id" : "sw-plus",
+    "displayName" : "Southwest Rapid Rewards Plus",
+    "issuer" : "Chase",
+    "annualFee" : 69.0,
+    "statementCreditsAnnual" : 0.0,
+    "rules" : [ {
+      "category" : "TRAVEL",
+      "multiplier" : 2.0,
+      "cap" : {
+        "period" : "ANNUAL",
+        "amountUsd" : 5000.0
+      },
+      "fallbackMultiplier" : 1.0,
+      "currency" : "SOUTHWEST_RR"
+    }, {
+      "category" : "GROCERIES",
+      "multiplier" : 2.0,
+      "cap" : {
+        "period" : "ANNUAL",
+        "amountUsd" : 5000.0
+      },
+      "fallbackMultiplier" : 1.0,
+      "currency" : "SOUTHWEST_RR"
+    }, {
+      "category" : "OTHER",
+      "multiplier" : 1.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "SOUTHWEST_RR"
+    } ]
+  }, {
+    "id" : "sw-premier",
+    "displayName" : "Southwest Rapid Rewards Premier",
+    "issuer" : "Chase",
+    "annualFee" : 99.0,
+    "statementCreditsAnnual" : 0.0,
+    "rules" : [ {
+      "category" : "TRAVEL",
+      "multiplier" : 2.0,
+      "cap" : {
+        "period" : "ANNUAL",
+        "amountUsd" : 8000.0
+      },
+      "fallbackMultiplier" : 1.0,
+      "currency" : "SOUTHWEST_RR"
+    }, {
+      "category" : "GROCERIES",
+      "multiplier" : 2.0,
+      "cap" : {
+        "period" : "ANNUAL",
+        "amountUsd" : 8000.0
+      },
+      "fallbackMultiplier" : 1.0,
+      "currency" : "SOUTHWEST_RR"
+    }, {
+      "category" : "OTHER",
+      "multiplier" : 1.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "SOUTHWEST_RR"
+    } ]
+  }, {
+    "id" : "sw-priority",
+    "displayName" : "Southwest Rapid Rewards Priority",
+    "issuer" : "Chase",
+    "annualFee" : 149.0,
+    "statementCreditsAnnual" : 60.0,
+    "rules" : [ {
+      "category" : "TRAVEL",
+      "multiplier" : 3.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "SOUTHWEST_RR"
+    }, {
+      "category" : "OTHER",
+      "multiplier" : 1.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "SOUTHWEST_RR"
+    } ]
+  }, {
+    "id" : "united-club",
+    "displayName" : "United Club Infinite Card",
+    "issuer" : "Chase",
+    "annualFee" : 525.0,
+    "statementCreditsAnnual" : 0.0,
+    "rules" : [ {
+      "category" : "TRAVEL",
+      "multiplier" : 4.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "UNITED_MILES"
+    }, {
+      "category" : "DINING",
+      "multiplier" : 2.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "UNITED_MILES"
+    }, {
+      "category" : "OTHER",
+      "multiplier" : 1.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "UNITED_MILES"
+    } ]
+  }, {
+    "id" : "united-explorer",
+    "displayName" : "United Explorer Card",
+    "issuer" : "Chase",
+    "annualFee" : 95.0,
+    "statementCreditsAnnual" : 0.0,
+    "rules" : [ {
+      "category" : "TRAVEL",
+      "multiplier" : 2.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "UNITED_MILES"
+    }, {
+      "category" : "DINING",
+      "multiplier" : 2.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "UNITED_MILES"
+    }, {
+      "category" : "OTHER",
+      "multiplier" : 1.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "UNITED_MILES"
+    } ]
+  }, {
+    "id" : "united-gateway",
+    "displayName" : "United Gateway Card",
+    "issuer" : "Chase",
+    "annualFee" : 0.0,
+    "statementCreditsAnnual" : 0.0,
+    "rules" : [ {
+      "category" : "DINING",
+      "multiplier" : 2.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "UNITED_MILES"
+    }, {
+      "category" : "OTHER",
+      "multiplier" : 1.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "UNITED_MILES"
+    } ]
+  }, {
+    "id" : "united-quest",
+    "displayName" : "United Quest Card",
+    "issuer" : "Chase",
+    "annualFee" : 250.0,
+    "statementCreditsAnnual" : 0.0,
+    "rules" : [ {
+      "category" : "TRAVEL",
+      "multiplier" : 3.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "UNITED_MILES"
+    }, {
+      "category" : "DINING",
+      "multiplier" : 2.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "UNITED_MILES"
+    }, {
+      "category" : "ONLINE",
+      "multiplier" : 2.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "UNITED_MILES"
+    }, {
+      "category" : "OTHER",
+      "multiplier" : 1.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "UNITED_MILES"
+    } ]
+  }, {
+    "id" : "us-bank-altitude-go",
+    "displayName" : "US Bank Altitude Go",
+    "issuer" : "US Bank",
+    "annualFee" : 0.0,
+    "statementCreditsAnnual" : 0.0,
+    "rules" : [ {
+      "category" : "DINING",
+      "multiplier" : 0.04,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "USD"
+    }, {
+      "category" : "GROCERIES",
+      "multiplier" : 0.02,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "USD"
+    }, {
+      "category" : "GAS",
+      "multiplier" : 0.02,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "USD"
+    }, {
+      "category" : "ONLINE",
+      "multiplier" : 0.02,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "USD"
+    }, {
+      "category" : "OTHER",
+      "multiplier" : 0.01,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "USD"
+    } ]
+  }, {
+    "id" : "usbank-cash-plus",
+    "displayName" : "U.S. Bank Cash+",
+    "issuer" : "US Bank",
+    "annualFee" : 0.0,
+    "statementCreditsAnnual" : 0.0,
+    "rules" : [ {
+      "category" : "GROCERIES",
+      "multiplier" : 0.05,
+      "cap" : {
+        "period" : "ANNUAL",
+        "amountUsd" : 8000.0
+      },
+      "fallbackMultiplier" : 0.01,
+      "currency" : "USD"
+    }, {
+      "category" : "OTHER",
+      "multiplier" : 0.01,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "USD"
+    } ]
+  }, {
+    "id" : "wf-active-cash",
+    "displayName" : "Wells Fargo Active Cash",
+    "issuer" : "Wells Fargo",
+    "annualFee" : 0.0,
+    "statementCreditsAnnual" : 0.0,
+    "rules" : [ {
+      "category" : "OTHER",
+      "multiplier" : 0.02,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "USD"
+    } ]
+  }, {
+    "id" : "wf-autograph",
+    "displayName" : "Wells Fargo Autograph",
+    "issuer" : "Wells Fargo",
+    "annualFee" : 0.0,
+    "statementCreditsAnnual" : 0.0,
+    "rules" : [ {
+      "category" : "DINING",
+      "multiplier" : 0.03,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "USD"
+    }, {
+      "category" : "TRAVEL",
+      "multiplier" : 0.03,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "USD"
+    }, {
+      "category" : "GAS",
+      "multiplier" : 0.03,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "USD"
+    }, {
+      "category" : "ONLINE",
+      "multiplier" : 0.03,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "USD"
+    }, {
+      "category" : "OTHER",
+      "multiplier" : 0.01,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "USD"
+    } ]
+  }, {
+    "id" : "wf-autograph-journey",
+    "displayName" : "Wells Fargo Autograph Journey",
+    "issuer" : "Wells Fargo",
+    "annualFee" : 95.0,
+    "statementCreditsAnnual" : 0.0,
+    "rules" : [ {
+      "category" : "TRAVEL",
+      "multiplier" : 5.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "WF_REWARDS"
+    }, {
+      "category" : "DINING",
+      "multiplier" : 3.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "WF_REWARDS"
+    }, {
+      "category" : "OTHER",
+      "multiplier" : 1.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "WF_REWARDS"
+    } ]
+  }, {
+    "id" : "wyndham-earner",
+    "displayName" : "Wyndham Rewards Earner",
+    "issuer" : "Barclays",
+    "annualFee" : 0.0,
+    "statementCreditsAnnual" : 0.0,
+    "rules" : [ {
+      "category" : "GAS",
+      "multiplier" : 5.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "WYNDHAM_POINTS"
+    }, {
+      "category" : "DINING",
+      "multiplier" : 2.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "WYNDHAM_POINTS"
+    }, {
+      "category" : "GROCERIES",
+      "multiplier" : 2.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "WYNDHAM_POINTS"
+    }, {
+      "category" : "OTHER",
+      "multiplier" : 1.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "WYNDHAM_POINTS"
+    } ]
+  }, {
+    "id" : "wyndham-earner-plus",
+    "displayName" : "Wyndham Rewards Earner Plus",
+    "issuer" : "Barclays",
+    "annualFee" : 75.0,
+    "statementCreditsAnnual" : 0.0,
+    "rules" : [ {
+      "category" : "GAS",
+      "multiplier" : 6.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "WYNDHAM_POINTS"
+    }, {
+      "category" : "DINING",
+      "multiplier" : 4.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "WYNDHAM_POINTS"
+    }, {
+      "category" : "GROCERIES",
+      "multiplier" : 4.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "WYNDHAM_POINTS"
+    }, {
+      "category" : "OTHER",
+      "multiplier" : 1.0,
+      "cap" : null,
+      "fallbackMultiplier" : null,
+      "currency" : "WYNDHAM_POINTS"
+    } ]
+  } ]
+}

@@ -1,0 +1,305 @@
+openapi: 3.0.3
+info:
+  title: Yukti Rewards Optimization API v1
+  version: 1.0.0
+
+paths:
+  /v1/optimize:
+    post:
+      summary: Optimize portfolio for spend and goal
+      operationId: optimizeV1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OptimizeRequest'
+      responses:
+        '200':
+          description: Optimization result
+          headers:
+            X-Request-Id:
+              schema:
+                type: string
+                format: uuid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OptimizeResponse'
+        '400':
+          description: Validation or bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+
+  /v1/catalog/cards:
+    get:
+      summary: List catalog cards (metadata only)
+      operationId: getCatalogCards
+      parameters:
+        - name: catalogVersion
+          in: query
+          schema:
+            type: string
+            default: "v1"
+      responses:
+        '200':
+          description: List of cards
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardsResponse'
+
+  /v1/config/goals:
+    get:
+      summary: Get supported goals and default CPP
+      operationId: getGoalsConfig
+      responses:
+        '200':
+          description: Goals configuration
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GoalsConfigResponse'
+
+components:
+  schemas:
+    OptimizeRequest:
+      type: object
+      required: [period, spendByCategoryUsd, goal, constraints]
+      properties:
+        catalogVersion:
+          type: string
+          default: "v1"
+        period:
+          type: string
+          enum: [ANNUAL, MONTHLY]
+        spendByCategoryUsd:
+          type: object
+          additionalProperties:
+            type: number
+            minimum: 0
+        goal:
+          $ref: '#/components/schemas/GoalDto'
+        constraints:
+          $ref: '#/components/schemas/ConstraintsDto'
+        goalPrompt:
+          type: string
+
+    GoalDto:
+      type: object
+      required: [goalType]
+      properties:
+        goalType:
+          type: string
+          enum: [CASHBACK, FLEX_POINTS, PROGRAM_POINTS]
+        primaryCurrency:
+          type: string
+          nullable: true
+        preferredCurrencies:
+          type: array
+          items:
+            type: string
+        cppOverrides:
+          type: object
+          additionalProperties:
+            type: number
+
+    ConstraintsDto:
+      type: object
+      properties:
+        maxCards:
+          type: integer
+          minimum: 1
+          maximum: 3
+        maxAnnualFeeUsd:
+          type: number
+          minimum: 0
+        allowBusinessCards:
+          type: boolean
+
+    OptimizeResponse:
+      type: object
+      properties:
+        requestId:
+          type: string
+        catalogVersion:
+          type: string
+        portfolio:
+          type: array
+          items:
+            $ref: '#/components/schemas/PortfolioCardDto'
+        allocation:
+          type: array
+          items:
+            $ref: '#/components/schemas/AllocationEntryDto'
+        breakdown:
+          $ref: '#/components/schemas/BreakdownDto'
+        explanation:
+          $ref: '#/components/schemas/ExplanationDto'
+        evidence:
+          type: array
+          items:
+            type: object
+        evidenceGraphDigest:
+          type: string
+          description: SHA-256 digest of evidence graph for reproducibility
+        evidenceIds:
+          type: array
+          items:
+            type: string
+          description: Ordered evidence node IDs
+        claimsDigest:
+          type: string
+          description: SHA-256 digest of claims list for IEEE-grade evaluation
+        verificationStatus:
+          type: string
+          enum: [PASS, FAIL]
+          description: Claim verifier result
+        claimCount:
+          type: integer
+          description: Number of claims in narrative
+        verifierErrorCount:
+          type: integer
+          description: Number of verification violations (0 when PASS)
+        goalInterpretation:
+          nullable: true
+          $ref: '#/components/schemas/GoalInterpretationDto'
+          description: Present only when user provided goalPrompt (AI assist); explains what we interpreted and why
+
+    GoalInterpretationDto:
+      type: object
+      description: What the user asked for and how we interpreted it (only when goalPrompt was provided)
+      properties:
+        userPrompt:
+          type: string
+          description: The user's goal prompt text
+        interpretedGoalType:
+          type: string
+          enum: [CASHBACK, FLEX_POINTS, PROGRAM_POINTS]
+        primaryCurrency:
+          type: string
+          nullable: true
+          description: Set for PROGRAM_POINTS (e.g. AVIOS, AA_MILES)
+        rationale:
+          type: string
+          description: Human-readable sentence explaining the interpretation
+
+    PortfolioCardDto:
+      type: object
+      properties:
+        cardId:
+          type: string
+        name:
+          type: string
+        issuer:
+          type: string
+        annualFeeUsd:
+          type: number
+        rewardCurrency:
+          type: string
+
+    AllocationEntryDto:
+      type: object
+      properties:
+        category:
+          type: string
+        cardId:
+          type: string
+        earnRatePercent:
+          type: number
+          description: Effective earn rate % for this (category, card); cashback or points value equivalent
+        earnValueUsd:
+          type: number
+          description: Earn value in USD for this (category, card) at profile spend
+
+    BreakdownDto:
+      type: object
+      properties:
+        totalEarnValueUsd:
+          type: number
+        totalCreditValueUsd:
+          type: number
+        totalFeesUsd:
+          type: number
+        netValueUsd:
+          type: number
+
+    ExplanationDto:
+      type: object
+      properties:
+        summary:
+          type: string
+        allocationTable:
+          type: string
+        details:
+          type: string
+        assumptions:
+          type: string
+        fullText:
+          type: string
+
+    ApiErrorResponse:
+      type: object
+      properties:
+        requestId:
+          type: string
+        errorCode:
+          type: string
+          enum: [VALIDATION_ERROR, BAD_REQUEST, INTERNAL_ERROR]
+        message:
+          type: string
+        details:
+          type: array
+          items:
+            type: object
+            properties:
+              field:
+                type: string
+              issue:
+                type: string
+
+    CardsResponse:
+      type: object
+      properties:
+        catalogVersion:
+          type: string
+        cards:
+          type: array
+          items:
+            type: object
+            properties:
+              cardId:
+                type: string
+              issuer:
+                type: string
+              name:
+                type: string
+              segment:
+                type: string
+              annualFeeUsd:
+                type: number
+              rewardCurrency:
+                type: string
+
+    GoalsConfigResponse:
+      type: object
+      properties:
+        supportedGoals:
+          type: array
+          items:
+            type: object
+            properties:
+              goalType:
+                type: string
+              requiresPrimaryCurrency:
+                type: boolean
+              allowedCurrencies:
+                type: array
+                items:
+                  type: string
+        defaultCppByCurrency:
+          type: object
+          additionalProperties:
+            type: number

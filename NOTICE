@@ -1,0 +1,33 @@
+Yukti
+Copyright 2026 Sachin Gupta
+
+This product includes software developed by the author as an independent
+research project conducted in a personal capacity.
+
+Third-Party Licenses
+====================
+
+This software depends on the following open source libraries:
+
+- Google OR-Tools (Apache 2.0) - https://developers.google.com/optimization
+- Jackson JSON (Apache 2.0) - https://github.com/FasterXML/jackson
+- JUnit 5 (EPL 2.0, test only) - https://junit.org/junit5/
+- ArchUnit (Apache 2.0, test only) - https://www.archunit.org/
+- React (MIT) - https://reactjs.org/
+- Vite (MIT) - https://vitejs.dev/
+- Tailwind CSS (MIT) - https://tailwindcss.com/
+
+Trademark Notice
+================
+
+Credit card product names (e.g., Chase Sapphire Preferred, American Express
+Gold, Citi Double Cash) used in the benchmark catalog are trademarks of their
+respective issuers. Their use in this software is for identification and
+research purposes only and does not imply endorsement by the trademark holders.
+
+Card terms, earn rates, annual fees, and spending caps used in the catalog are
+derived from publicly available information on issuer websites. CPP (cents per
+point) valuations are derived from published estimates and do not represent
+official valuations by any issuer or loyalty program.
+
+BLS Consumer Expenditure Survey data is public domain (US Government work).

@@ -1,0 +1,13 @@
+{
+  "version": "1.0",
+  "description": "Default cents-per-point by currency. Documented as adjustable.",
+  "defaults": {
+    "USD_CASH": 100,
+    "BANK_UR": 1.25,
+    "BANK_MR": 1.2,
+    "BANK_TY": 1.25,
+    "BANK_C1": 1.0,
+    "AA_MILES": 1.4
+  },
+  "programPrimaryPenalty": 0.7
+}

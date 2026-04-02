@@ -1,0 +1,13 @@
+{
+  "dslVersion": "carddsl.v0.1",
+  "cardId": "a-card",
+  "issuer": "Test",
+  "name": "A Card",
+  "segment": "PERSONAL",
+  "annualFeeUsd": 0,
+  "rewardCurrencyType": "USD_CASH",
+  "earnRules": [
+    { "ruleType": "EARN_MULTIPLIER", "category": "OTHER", "multiplier": 0.02, "cap": null, "fallbackMultiplier": null, "channel": null, "notes": null }
+  ],
+  "credits": []
+}

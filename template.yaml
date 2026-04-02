@@ -1,0 +1,41 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Yukti Phase-1 - API Gateway HTTP API + Lambda
+
+Globals:
+  Function:
+    Runtime: java21
+    Timeout: 30
+    MemorySize: 512
+
+Resources:
+  YuktiOptimizeFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: io.yukti.api.handler.OptimizeHandler::handleRequest
+      CodeUri: build/distributions/
+      Architectures:
+        - x86_64
+    Metadata:
+      BuildMethod: gradle
+
+  YuktiApi:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      StageName: prod
+      CorsConfiguration:
+        AllowOrigins:
+          - "*"
+        AllowMethods:
+          - POST
+          - OPTIONS
+        AllowHeaders:
+          - Content-Type
+      DefinitionBody:
+        openapi: 3.0
+        paths:
+          /optimize:
+            post:
+              x-amazon-apigateway-integration:
+                uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${YuktiOptimizeFunction.Arn}/invocations
+                type: aws_proxy

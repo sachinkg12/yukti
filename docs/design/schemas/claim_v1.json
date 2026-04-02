@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://yukti.design/schemas/claim_v1.json",
+  "title": "ClaimV1",
+  "description": "One verifiable claim that cites evidence (portable protocol v1).",
+  "type": "object",
+  "required": ["claimId", "claimType", "citedEvidenceIds", "citedEntities", "citedNumbers"],
+  "properties": {
+    "claimId": { "type": "string", "minLength": 1 },
+    "claimType": {
+      "type": "string",
+      "enum": [
+        "COMPARISON",
+        "THRESHOLD",
+        "ALLOCATION",
+        "ASSUMPTION",
+        "FEE_JUSTIFICATION",
+        "CAP_SWITCH"
+      ]
+    },
+    "text": { "type": "string" },
+    "citedEvidenceIds": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "citedEntities": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "citedNumbers": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+  "additionalProperties": true
+}

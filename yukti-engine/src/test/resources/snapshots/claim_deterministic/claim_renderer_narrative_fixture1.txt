@@ -1,0 +1,20 @@
+## Why these cards
+- citi-double-cash wins OTHER: delta $20.00
+- amex-bcp wins GROCERIES over amex-bce: delta $60.00
+- amex-bcp wins DINING: delta $30.00
+
+## Allocation
+| Category | Card |
+|----------|------|
+| DINING | amex-bcp |
+| GROCERIES | amex-bcp |
+| OTHER | citi-double-cash |
+
+## Caps and switching
+- amex-bcp GROCERIES: cap $6000, remaining $2000, fallback amex-bce
+
+## Fees and credits
+- amex-bcp: fee $95, credits $0
+
+## Assumptions
+- cpp: default-cpp.v1, penalties: strict, credits: on

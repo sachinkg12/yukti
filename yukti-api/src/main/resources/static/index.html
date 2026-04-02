@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Yukti - Rewards Optimization</title>
+  <style>
+    :root { --bg: #0f172a; --surface: #1e293b; --accent: #38bdf8; --text: #f1f5f9; --muted: #94a3b8; }
+    * { box-sizing: border-box; }
+    body { font-family: 'JetBrains Mono', monospace; background: var(--bg); color: var(--text); margin: 0; padding: 2rem; min-height: 100vh; }
+    .container { max-width: 720px; margin: 0 auto; }
+    h1 { font-size: 1.75rem; margin-bottom: 0.5rem; }
+    .sub { color: var(--muted); font-size: 0.9rem; margin-bottom: 2rem; }
+    .section { margin-bottom: 1.5rem; }
+    .section label { display: block; margin-bottom: 0.5rem; color: var(--muted); font-size: 0.85rem; }
+    .row { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .field { flex: 1; min-width: 100px; }
+    .field input { width: 100%; padding: 0.5rem; background: var(--surface); border: 1px solid #334155; color: var(--text); border-radius: 4px; }
+    select { padding: 0.5rem; background: var(--surface); border: 1px solid #334155; color: var(--text); border-radius: 4px; min-width: 160px; }
+    button { background: var(--accent); color: var(--bg); border: none; padding: 0.6rem 1.2rem; border-radius: 4px; font-weight: 600; cursor: pointer; font-family: inherit; }
+    button:hover { filter: brightness(1.1); }
+    button:disabled { opacity: 0.6; cursor: not-allowed; }
+    #result { margin-top: 2rem; padding: 1.5rem; background: var(--surface); border-radius: 8px; border-left: 4px solid var(--accent); display: none; }
+    #result.visible { display: block; }
+    #result h2 { font-size: 1.1rem; margin-top: 0; margin-bottom: 1rem; }
+    #result pre { font-size: 0.8rem; overflow-x: auto; white-space: pre-wrap; }
+    .breakdown { display: flex; gap: 1rem; flex-wrap: wrap; margin: 1rem 0; }
+    .breakdown span { padding: 0.25rem 0.5rem; background: #334155; border-radius: 4px; font-size: 0.85rem; }
+    .net { color: #4ade80; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Yukti</h1>
+    <p class="sub">AI-first rewards optimization · Phase-1</p>
+    <div class="section">
+      <label>Monthly spend (USD) by category</label>
+      <div class="row" id="spend-fields"></div>
+    </div>
+    <div class="section row" style="gap: 1.5rem; align-items: flex-end;">
+      <div><label>Goal</label>
+        <select id="goal">
+          <option value="CASHBACK">Cashback</option>
+          <option value="FLEX_POINTS">Flexible Points</option>
+          <option value="PROGRAM_POINTS">Program Points (AA Miles)</option>
+        </select>
+      </div>
+      <div><label>Max cards</label><input type="number" id="maxCards" value="3" min="1" max="5" style="width: 4rem;"></div>
+      <div><button id="submit">Optimize</button></div>
+    </div>
+    <div id="result">
+      <h2>Result</h2>
+      <p><strong>Portfolio:</strong> <span id="portfolio"></span></p>
+      <p><strong>Allocation:</strong></p><pre id="allocation"></pre>
+      <div class="breakdown" id="breakdown"></div>
+      <p><strong>Net value:</strong> <span id="net" class="net"></span></p>
+      <p><strong>Narrative:</strong></p><p id="narrative" style="font-size: 0.9rem; color: var(--muted);"></p>
+      <p><strong>Switching notes:</strong></p><ul id="switching"></ul>
+    </div>
+  </div>
+  <script>
+    const categories = ['GROCERIES','DINING','GAS','TRAVEL','ONLINE','OTHER'];
+    document.getElementById('spend-fields').innerHTML = categories.map(cat =>
+      `<div class="field"><label>${cat.replace(/_/g,' ')}</label><input type="number" data-cat="${cat}" value="0" min="0" step="50"></div>`
+    ).join('');
+    const API_BASE = '';
+    document.getElementById('submit').addEventListener('click', async () => {
+      const spend = {};
+      categories.forEach(cat => { const v = parseFloat(document.querySelector(`input[data-cat="${cat}"]`).value) || 0; if (v > 0) spend[cat] = v; });
+      if (Object.keys(spend).length === 0) spend.OTHER = 0;
+      const payload = { monthly: true, spend, goal: document.getElementById('goal').value, maxCards: parseInt(document.getElementById('maxCards').value) || 3 };
+      document.getElementById('submit').disabled = true;
+      try {
+        const res = await fetch(`${API_BASE}/optimize`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Request failed');
+        document.getElementById('result').classList.add('visible');
+        document.getElementById('portfolio').textContent = data.portfolio.join(', ');
+        document.getElementById('allocation').textContent = JSON.stringify(data.allocation || {}, null, 2);
+        const b = data.breakdown || {};
+        document.getElementById('breakdown').innerHTML = [`Earn: $${(b.earnValueUsd||0).toFixed(2)}`, `Credits: $${(b.creditsValueUsd||0).toFixed(2)}`, `Fees: $${(b.feesUsd||0).toFixed(2)}`].map(s=>`<span>${s}</span>`).join('');
+        document.getElementById('net').textContent = `$${(b.netUsd||0).toFixed(2)} / year`;
+        document.getElementById('narrative').textContent = data.explanation?.narrative || '';
+        document.getElementById('switching').innerHTML = (data.switchingNotes||[]).map(n=>`<li>${n}</li>`).join('');
+      } catch (e) {
+        document.getElementById('result').classList.add('visible');
+        document.getElementById('portfolio').textContent = 'Error';
+        document.getElementById('allocation').textContent = e.message;
+      } finally { document.getElementById('submit').disabled = false; }
+    });
+  </script>
+</body>
+</html>

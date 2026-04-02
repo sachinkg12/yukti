@@ -1,0 +1,27 @@
+#!/bin/sh
+# Pre-push hook: block push if any commit being pushed modifies files under docs/
+# (e.g. paper draft, internal docs). You can still commit docs/ locally.
+#
+# Install (from repo root):
+#   cp scripts/git-hooks/pre-push .git/hooks/pre-push && chmod +x .git/hooks/pre-push
+
+PROTECTED_PREFIX="docs/"
+
+while read -r local_ref local_sha remote_ref remote_sha; do
+  [ -z "$local_sha" ] && continue
+  [ "$local_sha" = "0000000000000000000000000000000000000000" ] && continue
+  if [ -z "$remote_sha" ] || [ "$remote_sha" = "0000000000000000000000000000000000000000" ]; then
+    range="$local_sha"
+  else
+    range="$remote_sha..$local_sha"
+  fi
+  for commit in $(git rev-list "$range" 2>/dev/null); do
+    if git diff-tree --no-commit-id --name-only -r "$commit" 2>/dev/null | grep -q "^${PROTECTED_PREFIX}"; then
+      echo "Push blocked: commits would expose files under ${PROTECTED_PREFIX}" >&2
+      echo "At least one commit in this push modifies docs/. Remove those changes from the pushed commits, or push a branch that doesn't include them." >&2
+      exit 1
+    fi
+  done
+done
+
+exit 0

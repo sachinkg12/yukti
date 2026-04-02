@@ -1,0 +1,1 @@
+{"breakdown":{"totalEarnValueUsd":450.00,"totalFeesUsd":95.00},"cpp":1.400,"netValueUsd":405.50,"pointsEarned":1001}

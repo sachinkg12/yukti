@@ -1,0 +1,17 @@
+## Why these cards
+- amex-gold wins DINING over amex-bcp: delta $45.00
+- citi-double-cash wins GROCERIES: delta $100.00
+
+## Allocation
+| Category | Card |
+|----------|------|
+| DINING | amex-gold |
+| GROCERIES | citi-double-cash |
+
+## Caps and switching
+
+## Fees and credits
+- amex-gold: fee $250, credits $120
+
+## Assumptions
+- cpp: default-cpp.v1, penalties: strict, credits: on
