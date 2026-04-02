@@ -23,6 +23,11 @@ tasks.withType<JavaExec>().configureEach {
     systemProperties(props.mapKeys { it.key.toString() })
 }
 
+// Do NOT force io.yukti.bench.version in tests — let individual tests set their own version
+tasks.withType<Test>().configureEach {
+    workingDir = rootProject.layout.projectDirectory.asFile
+}
+
 // Reproducibility: run bench and write JSON to artifacts/bench/v1/bench_results.json (paper-bound profile set)
 tasks.register<JavaExec>("runBench") {
     group = "bench"
