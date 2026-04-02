@@ -1,34 +1,3 @@
-# ── Documentation ────────────────────────────────────────────────────
-*.md
-!/README.md
-
-# ── Paper / Research / Patent ─────────────────────────────────────────
-arxiv/
-arxiv_bundle*
-docs/paper/
-/paper/
-patent/
-docs/patent/
-scripts/build_pdf.sh
-scripts/build_arxiv_paper.sh
-scripts/build_ieee_access_paper.sh
-scripts/bundle_arxiv.sh
-scripts/prepare_arxiv_sections.py
-scripts/md_to_tex.py
-scripts/paper/tex_to_ieee_access.py
-
-# ── Office / Binary docs ─────────────────────────────────────────────
-*.xlsx
-*.pdf
-~$*
-.~lock.*
-
-# ── Python ────────────────────────────────────────────────────────────
-__pycache__/
-*.pyc
-.venv/
-.venv-milp/
-
 # ── Build ─────────────────────────────────────────────────────────────
 build/
 .gradle/
@@ -42,11 +11,16 @@ out/
 # ── OS ────────────────────────────────────────────────────────────────
 .DS_Store
 
+# ── Python ────────────────────────────────────────────────────────────
+__pycache__/
+*.pyc
+.venv/
+
 # ── Bench artifacts ───────────────────────────────────────────────────
 artifacts/
 yukti-bench/artifacts/
 
-# ── yukti-web (Vite + React) ─────────────────────────────────────────
+# ── yukti-web ─────────────────────────────────────────────────────────
 yukti-web/node_modules/
 yukti-web/dist/
 yukti-web/.env
