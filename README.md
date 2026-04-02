@@ -41,6 +41,25 @@ cd yukti-web && npm install && npm run dev
 
 Open http://localhost:15173 for the UI, or use the API directly.
 
+### With AI features (optional)
+
+Yukti supports optional LLM-powered features for natural language goal interpretation and enhanced explanations. The optimization itself is always deterministic (MILP) — AI only assists with input parsing and output narration.
+
+```bash
+export OPENAI_API_KEY=sk-your-key-here
+export GOAL_LLM_ENABLED=true
+export NARRATION_LLM_ENABLED=true
+./gradlew :yukti-api:runServer
+```
+
+| Feature | Env Variable | What it does | Without it |
+|---------|-------------|-------------|------------|
+| Goal interpretation | `GOAL_LLM_ENABLED=true` | Type "I fly AA a lot" and the LLM maps it to PROGRAM_POINTS with AA_MILES | Manual goal selection via dropdown |
+| Explanation narration | `OPENAI_API_KEY` set | Natural language explanations of optimization decisions | Template-based deterministic explanations |
+| LLM claim generation | `NARRATION_LLM_ENABLED=true` | Additional LLM-generated explanation claims | Deterministic claims only |
+
+All three require `OPENAI_API_KEY`. Without it, the system works fully with deterministic defaults.
+
 ## API
 
 ### POST `/v1/optimize`
