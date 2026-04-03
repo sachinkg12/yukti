@@ -1,20 +1,23 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap");
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --bg: #f8fafc;
-  --surface: #ffffff;
-  --surface-elevated: #ffffff;
-  --border: #e2e8f0;
-  --text: #0f172a;
-  --text-muted: #64748b;
-  --primary: #2563eb;
-  --primary-hover: #1d4ed8;
-  --success: #059669;
-  --error: #dc2626;
+  --bg: #0a0a0f;
+  --surface: rgba(255, 255, 255, 0.03);
+  --surface-elevated: rgba(255, 255, 255, 0.06);
+  --border: rgba(255, 255, 255, 0.06);
+  --border-hover: rgba(255, 255, 255, 0.12);
+  --text: #e4e4e7;
+  --text-muted: #71717a;
+  --text-dim: #52525b;
+  --primary: #6366f1;
+  --primary-hover: #818cf8;
+  --success: #34d399;
+  --error: #f87171;
+  --warning: #fbbf24;
 }
 
 body {
@@ -23,24 +26,78 @@ body {
   color: var(--text);
   margin: 0;
   min-height: 100vh;
+  overflow-x: hidden;
 }
 
-/* Subtle gradient + noise texture (CSS only) */
+/* Ambient background glow */
 body::before {
   content: "";
   position: fixed;
   inset: 0;
-  background: linear-gradient(
-    180deg,
-    rgba(241, 245, 249, 0.8) 0%,
-    rgba(226, 232, 240, 0.3) 100%
-  );
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(99, 102, 241, 0.15), transparent),
+    radial-gradient(ellipse 60% 40% at 80% 50%, rgba(16, 185, 129, 0.08), transparent),
+    radial-gradient(ellipse 50% 50% at 20% 80%, rgba(244, 114, 182, 0.06), transparent);
   pointer-events: none;
-  z-index: -1;
+  z-index: 0;
+}
+
+#root {
+  position: relative;
+  z-index: 1;
 }
 
 /* Focus ring for accessibility */
 *:focus-visible {
   outline: 2px solid var(--primary);
   outline-offset: 2px;
+}
+
+/* Glass card base */
+.glass {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 1.25rem;
+  transition: border-color 0.3s;
+}
+.glass:hover {
+  border-color: var(--border-hover);
+}
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, #fff 0%, #a1a1aa 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Custom scrollbar for dark theme */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+
+/* Smooth animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in {
+  animation: fadeIn 0.5s ease forwards;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-slide-up {
+  animation: slideUp 0.6s ease forwards;
+}
+
+/* Bar fill animation */
+@keyframes barGrow {
+  from { width: 0; }
+}
+.animate-bar {
+  animation: barGrow 0.8s ease forwards;
 }

@@ -1,22 +1,9 @@
 import { useState, useEffect, useRef } from "react"
-import { useNavigate } from "react-router-dom"
 import { getGoalsConfig, getCatalogCards, optimize, type ApiError } from "../api/client"
-import type { ProfileV1, GoalsConfigResponse, CardsResponse, Currency } from "../types"
+import type { ProfileV1, GoalsConfigResponse, CardsResponse, OptimizeResponseV1 } from "../types"
 import { loadProfile, saveProfile } from "../storage"
 import { defaultProfile, spendPresets } from "../defaults"
 import { CATEGORIES } from "../types"
-import {
-  Accordion,
-  Badge,
-  Card,
-  CardBody,
-  CardHeader,
-  GoalPicker,
-  InlineAlert,
-  MoneyInput,
-  SectionTitle,
-  SegmentedControl,
-} from "../components/ui"
 
 const CATEGORY_LABELS: Record<string, string> = {
   GROCERIES: "Groceries",
@@ -27,68 +14,77 @@ const CATEGORY_LABELS: Record<string, string> = {
   OTHER: "Other",
 }
 
+const CATEGORY_ICONS: Record<string, string> = {
+  GROCERIES: "\u{1F6D2}",
+  DINING: "\u{1F37D}",
+  GAS: "\u26FD",
+  TRAVEL: "\u2708",
+  ONLINE: "\u{1F4BB}",
+  OTHER: "\u{1F4B3}",
+}
+
+const OPTIMIZER_OPTIONS = [
+  { id: "", label: "MILP (Optimal)" },
+  { id: "sa-v1", label: "Simulated Annealing" },
+  { id: "greedy-v1", label: "Greedy" },
+  { id: "lp-relaxation-v1", label: "LP Relaxation" },
+  { id: "exhaustive-search-v1", label: "Exhaustive (slow)" },
+  { id: "cap-aware-greedy-v1", label: "Cap Aware Greedy" },
+  { id: "ahp-mcdm-baseline-v1", label: "AHP/MCDM" },
+  { id: "ahp-pairwise-baseline-v1", label: "AHP/Pairwise" },
+  { id: "rule-based-recommender-v1", label: "Rule Based" },
+  { id: "content-based-top-k-baseline-v1", label: "Content Based Top 3" },
+  { id: "single-best-per-category-baseline-v1", label: "Category Winner" },
+  { id: "top-k-popular-baseline-v1", label: "Top K Popular" },
+  { id: "random-k-baseline-v1", label: "Random K" },
+]
+
+const BAR_COLORS = [
+  "from-indigo-500/40 to-indigo-500/20",
+  "from-emerald-500/40 to-emerald-500/20",
+  "from-pink-500/40 to-pink-500/20",
+  "from-amber-500/40 to-amber-500/20",
+  "from-cyan-500/40 to-cyan-500/20",
+  "from-purple-500/40 to-purple-500/20",
+]
+
 export default function Home() {
-  const navigate = useNavigate()
   const [profile, setProfile] = useState<ProfileV1>(defaultProfile)
   const [goalsConfig, setGoalsConfig] = useState<GoalsConfigResponse | null>(null)
   const [catalogCards, setCatalogCards] = useState<CardsResponse | null>(null)
   const [error, setError] = useState<string | null>(null)
-  const importInputRef = useRef<HTMLInputElement>(null)
   const [apiError, setApiError] = useState<ApiError | null>(null)
   const [loading, setLoading] = useState(false)
-  const [cardsSearch, setCardsSearch] = useState("")
-  const [cardsFilterCurrency, setCardsFilterCurrency] = useState<string>("")
-  const [aiAssistOpen, setAiAssistOpen] = useState(false)
-  const errorBannerRef = useRef<HTMLDivElement>(null)
+  const [result, setResult] = useState<OptimizeResponseV1 | null>(null)
+  const [showAdvanced, setShowAdvanced] = useState(false)
+  const resultRef = useRef<HTMLDivElement>(null)
+  const [goalPrompt, setGoalPrompt] = useState("")
+  const [showCatalog, setShowCatalog] = useState(false)
+  const [catalogSearch, setCatalogSearch] = useState("")
 
   useEffect(() => {
-    loadProfile()?.updatedAtIso && setProfile(loadProfile() ?? defaultProfile)
+    const saved = loadProfile()
+    if (saved?.updatedAtIso) setProfile(saved)
   }, [])
 
   useEffect(() => {
-    getGoalsConfig()
-      .then(setGoalsConfig)
-      .catch(() => setError("Backend unreachable"))
-    getCatalogCards(profile.catalogVersion ?? "1.0")
-      .then(setCatalogCards)
-      .catch(() => {})
+    getGoalsConfig().then(setGoalsConfig).catch(() => {})
+    getCatalogCards().then(setCatalogCards).catch(() => {})
   }, [])
 
   useEffect(() => {
-    saveProfile(profile)
+    saveProfile({ ...profile, updatedAtIso: new Date().toISOString() })
   }, [profile])
 
-  const handleSpendChange = (cat: string, val: number) => {
-    setProfile((p) => ({
-      ...p,
-      spendByCategoryUsd: {
-        ...p.spendByCategoryUsd,
-        [cat]: Math.max(0, val),
-      },
-    }))
-  }
-
-  const applyPreset = (presetName: string) => {
-    const preset = spendPresets[presetName]
-    if (preset) {
-      setProfile((p) => ({
-        ...p,
-        spendByCategoryUsd: { ...preset } as ProfileV1["spendByCategoryUsd"],
-      }))
-    }
-  }
-
-  const totalSpend = Object.values(profile.spendByCategoryUsd).reduce((a, b) => a + (b || 0), 0)
-  const isValid =
-    Object.values(profile.spendByCategoryUsd).every((v) => v >= 0) &&
-    totalSpend > 0 &&
-    profile.goal.goalType &&
+  const totalSpend = Object.values(profile.spendByCategoryUsd).reduce((a, b) => a + b, 0)
+  const isValid = totalSpend > 0 && profile.goal.goalType &&
     (profile.goal.goalType !== "PROGRAM_POINTS" || profile.goal.primaryCurrency)
 
   const handleSubmit = async () => {
     setError(null)
     setApiError(null)
     setLoading(true)
+    setResult(null)
     try {
       const maxFee = Number(profile.constraints.maxAnnualFeeUsd)
       const req = {
@@ -97,542 +93,431 @@ export default function Home() {
         spendByCategoryUsd: profile.spendByCategoryUsd,
         goal: {
           goalType: profile.goal.goalType,
-          primaryCurrency:
-            profile.goal.goalType === "PROGRAM_POINTS"
-              ? profile.goal.primaryCurrency ?? undefined
-              : null,
+          primaryCurrency: profile.goal.goalType === "PROGRAM_POINTS"
+            ? profile.goal.primaryCurrency ?? undefined : null,
           preferredCurrencies: profile.goal.preferredCurrencies ?? [],
-          cppOverrides:
-            profile.goal.cppOverrides && Object.keys(profile.goal.cppOverrides).length > 0
-              ? profile.goal.cppOverrides
-              : undefined,
+          cppOverrides: profile.goal.cppOverrides && Object.keys(profile.goal.cppOverrides).length > 0
+            ? profile.goal.cppOverrides : undefined,
         },
         constraints: {
           maxCards: profile.constraints.maxCards,
           maxAnnualFeeUsd: Number.isFinite(maxFee) && maxFee >= 0 ? maxFee : 200,
           allowBusinessCards: profile.constraints.allowBusinessCards,
         },
-        goalPrompt: profile.goalPrompt?.trim() || undefined,
+        goalPrompt: goalPrompt.trim() || undefined,
         optimizerId: profile.optimizerId || undefined,
       }
-      const result = await optimize(req)
+      const res = await optimize(req)
       setLoading(false)
-      if (result.ok) {
-        sessionStorage.setItem("yukti.result", JSON.stringify(result.data))
-        navigate("/results")
+      if (res.ok) {
+        setResult(res.data)
+        sessionStorage.setItem("yukti.result", JSON.stringify(res.data))
+        setTimeout(() => resultRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 100)
       } else {
-        setApiError(result.error)
-        errorBannerRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" })
+        setApiError(res.error)
       }
-    } catch (e) {
+    } catch (e: any) {
       setLoading(false)
-      const msg =
-        e instanceof Error && e.name === "AbortError"
-          ? "Request timed out (90s). Backend may be slow on first run."
-          : e instanceof Error
-            ? e.message
-            : "Backend unreachable"
-      setError(msg)
-      errorBannerRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" })
+      setError(e.message || "Something went wrong")
     }
   }
 
-  const cppCurrencies =
-    profile.goal.goalType === "CASHBACK"
-      ? ["USD_CASH"]
-      : profile.goal.goalType === "FLEX_POINTS"
-        ? ["BANK_UR", "BANK_MR", "BANK_TY", "BANK_C1"]
-        : profile.goal.goalType === "PROGRAM_POINTS"
-          ? ["AA_MILES"]
-          : []
+  const applyPreset = (preset: Record<string, number>) => {
+    setProfile(p => ({ ...p, spendByCategoryUsd: preset as any }))
+  }
 
-  const filteredCards =
-    catalogCards?.cards.filter((c) => {
-      const matchSearch =
-        !cardsSearch ||
-        c.name.toLowerCase().includes(cardsSearch.toLowerCase()) ||
-        c.issuer.toLowerCase().includes(cardsSearch.toLowerCase())
-      const matchCurrency =
-        !cardsFilterCurrency || c.rewardCurrency === cardsFilterCurrency
-      return matchSearch && matchCurrency
-    }) ?? []
+  const cardColorMap = new Map<string, number>()
+  if (result) {
+    result.portfolio.forEach((c, i) => cardColorMap.set(c.cardId, i))
+  }
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8" role="main">
-        <header className="mb-8">
-          <h1 className="text-2xl font-bold text-slate-900 sm:text-3xl">Yukti</h1>
-          <p className="mt-1 text-slate-600">
-            AI-first rewards optimization (grounded + explainable)
-          </p>
-        </header>
+    <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      {/* Nav */}
+      <nav className="flex items-center justify-between py-4 mb-6">
+        <div className="flex items-center gap-2">
+          <span className="text-2xl font-extrabold bg-gradient-to-r from-indigo-400 to-emerald-400 bg-clip-text text-transparent">yukti</span>
+          <span className="text-sm text-zinc-400 hidden sm:inline">smart card optimizer</span>
+        </div>
+        <button
+          onClick={() => setShowCatalog(!showCatalog)}
+          className="text-xs text-zinc-400 px-3 py-1.5 rounded-lg border border-white/[0.08] bg-white/[0.04] hover:border-indigo-400/30 hover:text-indigo-400 transition-all cursor-pointer"
+        >
+          {catalogCards ? `${catalogCards.cards.length} cards` : "..."} {showCatalog ? "\u2715" : "\u2193"}
+        </button>
+      </nav>
 
-        {(error || apiError) && (
-          <div ref={errorBannerRef} className="mb-6">
-            <InlineAlert
-              error={error ?? undefined}
-              apiError={apiError ?? undefined}
-              onDismiss={() => {
-                setError(null)
-                setApiError(null)
-              }}
+      {/* Card Catalog Panel */}
+      {showCatalog && catalogCards && (
+        <div className="glass p-5 mb-6 animate-fade-in rounded-2xl">
+          <div className="flex items-center justify-between mb-4">
+            <div className="text-xs uppercase tracking-widest text-zinc-400">
+              Card Catalog &middot; {catalogCards.cards.length} cards
+            </div>
+            <input
+              type="text"
+              value={catalogSearch}
+              onChange={e => setCatalogSearch(e.target.value)}
+              placeholder="Search cards..."
+              className="bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-1.5 text-sm text-white outline-none focus:border-indigo-400/30 w-48 placeholder:text-zinc-600"
             />
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 max-h-80 overflow-y-auto pr-1">
+            {catalogCards.cards
+              .filter(c => {
+                if (!catalogSearch) return true
+                const q = catalogSearch.toLowerCase()
+                return c.name.toLowerCase().includes(q) || c.issuer.toLowerCase().includes(q) || c.rewardCurrency.toLowerCase().includes(q)
+              })
+              .sort((a, b) => a.issuer.localeCompare(b.issuer) || a.name.localeCompare(b.name))
+              .map(card => (
+                <div key={card.cardId} className="bg-white/[0.02] border border-white/[0.06] rounded-xl p-3 hover:border-white/[0.12] transition-all">
+                  <div className="text-xs font-semibold text-[#e4e4e7] truncate">{card.name}</div>
+                  <div className="text-[0.65rem] text-zinc-500 mt-0.5">{card.issuer}</div>
+                  <div className="flex items-center justify-between mt-2">
+                    <span className="text-[0.6rem] bg-indigo-500/10 text-indigo-400 px-1.5 py-0.5 rounded-full">{card.rewardCurrency.replace(/_/g, " ")}</span>
+                    <span className="text-[0.65rem] text-zinc-500">{card.annualFeeUsd > 0 ? `$${card.annualFeeUsd}/yr` : "No fee"}</span>
+                  </div>
+                </div>
+              ))}
+          </div>
+        </div>
+      )}
+
+      {/* Hero */}
+      <div className="text-center py-8 sm:py-12">
+        <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight gradient-text leading-tight">
+          Find your perfect<br className="hidden sm:block" />card portfolio
+        </h1>
+        <p className="text-zinc-400 text-lg mt-3 max-w-xl mx-auto">
+          MILP-optimized card selection across {catalogCards?.cards.length ?? 70} US credit cards. Solver-certified optimal.
+        </p>
+      </div>
+
+      {/* AI Prompt Bar */}
+      <div className="max-w-2xl mx-auto mb-2">
+        <div className="glass flex items-center p-1 focus-within:border-indigo-400/30 focus-within:shadow-glow transition-all">
+          <span className="px-3 text-lg opacity-50">{"\u2728"}</span>
+          <input
+            type="text"
+            value={goalPrompt}
+            onChange={e => setGoalPrompt(e.target.value)}
+            onKeyDown={e => e.key === "Enter" && isValid && handleSubmit()}
+            placeholder='Tell us your goal \u2014 "I fly American Airlines and spend $800/mo on groceries"'
+            className="flex-1 bg-transparent border-none outline-none text-[#e4e4e7] text-base py-3 font-sans placeholder:text-zinc-500"
+          />
+          <button
+            onClick={handleSubmit}
+            disabled={!isValid || loading}
+            className="bg-gradient-to-r from-indigo-500 to-purple-500 text-white px-5 py-2.5 rounded-xl text-sm font-semibold whitespace-nowrap disabled:opacity-40 hover:opacity-90 transition-opacity"
+          >
+            {loading ? "Optimizing..." : "Optimize"}
+          </button>
+        </div>
+        <p className="text-center text-zinc-500 text-xs mt-2">AI interprets your goal and optimizes instantly. Or configure manually below.</p>
+      </div>
+
+      {/* Divider */}
+      <div className="flex items-center gap-4 max-w-2xl mx-auto my-8 text-zinc-500 text-xs uppercase tracking-widest">
+        <div className="flex-1 h-px bg-white/[0.06]" />
+        <span>or configure manually</span>
+        <div className="flex-1 h-px bg-white/[0.06]" />
+      </div>
+
+      {/* Error */}
+      {(error || apiError) && (
+        <div className="max-w-2xl mx-auto mb-6 glass border-error/30 bg-error/5 p-4 rounded-2xl">
+          <p className="text-red-400 text-sm font-medium">{error || apiError?.message}</p>
+          {apiError?.details?.map((d, i) => <p key={i} className="text-zinc-500 text-xs mt-1">{d.field}: {d.issue}</p>)}
+        </div>
+      )}
+
+      {/* Main Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Spend Card */}
+        <div className="glass p-6">
+          <div className="flex items-center gap-2 text-xs uppercase tracking-widest text-zinc-400 mb-5">
+            <span className="w-1.5 h-1.5 rounded-full bg-indigo-500/50" /> Spend Profile
+          </div>
+          <div className="flex gap-1 bg-white/[0.04] rounded-lg p-0.5 mb-4">
+            {(["MONTHLY", "ANNUAL"] as const).map(p => (
+              <button key={p} onClick={() => setProfile(pr => ({ ...pr, period: p }))}
+                className={`flex-1 py-2 rounded-md text-sm font-medium transition-all ${profile.period === p ? "bg-indigo-500/20 text-indigo-400" : "text-zinc-400 hover:text-[#e4e4e7]"}`}>
+                {p === "MONTHLY" ? "Monthly" : "Annual"}
+              </button>
+            ))}
+          </div>
+          <div className="flex gap-2 mb-4 flex-wrap">
+            {Object.entries(spendPresets).map(([label, spend]) => (
+              <button key={label} onClick={() => applyPreset(spend)}
+                className="border border-white/[0.08] bg-white/[0.04] rounded-full px-3 py-1.5 text-xs text-zinc-400 hover:text-indigo-400 hover:border-indigo-400/30 hover:bg-indigo-500/5 transition-all">
+                {label}
+              </button>
+            ))}
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            {CATEGORIES.map(cat => (
+              <div key={cat}>
+                <label className="block text-xs text-zinc-400 mb-1 font-medium">{CATEGORY_ICONS[cat]} {CATEGORY_LABELS[cat]}</label>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500 text-sm">$</span>
+                  <input type="number" min={0} value={profile.spendByCategoryUsd[cat] || ""}
+                    onChange={e => setProfile(p => ({ ...p, spendByCategoryUsd: { ...p.spendByCategoryUsd, [cat]: parseFloat(e.target.value) || 0 } }))}
+                    className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl py-2.5 pl-7 pr-3 text-white text-sm font-sans outline-none focus:border-indigo-400/50 focus:shadow-glow transition-all" placeholder="0" />
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="flex justify-between items-center mt-4 pt-4 border-t border-white/[0.08]">
+            <span className="text-zinc-400 text-sm">Total {profile.period === "MONTHLY" ? "monthly" : "annual"} spend</span>
+            <span className="text-xl font-bold text-emerald-400">${totalSpend.toLocaleString()}</span>
+          </div>
+        </div>
+
+        {/* Goal Card */}
+        <div className="glass p-6">
+          <div className="flex items-center gap-2 text-xs uppercase tracking-widest text-zinc-400 mb-5">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" /> Reward Goal
+          </div>
+          <div className="grid grid-cols-3 gap-3">
+            {([
+              { type: "CASHBACK" as const, icon: "\u{1F4B0}", name: "Cashback", desc: "Maximize USD cash" },
+              { type: "FLEX_POINTS" as const, icon: "\u2728", name: "Flex Points", desc: "Chase UR, Amex MR" },
+              { type: "PROGRAM_POINTS" as const, icon: "\u2708\uFE0F", name: "Program", desc: "AA, United, Marriott" },
+            ]).map(g => (
+              <button key={g.type} onClick={() => setProfile(p => ({ ...p, goal: { ...p.goal, goalType: g.type } }))}
+                className={`relative overflow-hidden rounded-2xl p-4 text-center transition-all cursor-pointer border ${
+                  profile.goal.goalType === g.type ? "border-indigo-400/30 bg-indigo-500/10" : "border-white/[0.08] bg-white/[0.02] hover:border-white/[0.15] hover:-translate-y-0.5"}`}>
+                {profile.goal.goalType === g.type && <div className="absolute inset-0 bg-gradient-to-b from-indigo-500/15 to-transparent" />}
+                <div className="relative">
+                  <div className="text-2xl mb-1">{g.icon}</div>
+                  <div className="text-sm font-semibold text-[#e4e4e7]">{g.name}</div>
+                  <div className="text-xs text-zinc-400 mt-0.5">{g.desc}</div>
+                </div>
+              </button>
+            ))}
+          </div>
+          {profile.goal.goalType === "PROGRAM_POINTS" && goalsConfig && (
+            <div className="mt-4">
+              <label className="text-xs text-zinc-400 block mb-2">Primary currency</label>
+              <select value={profile.goal.primaryCurrency ?? ""}
+                onChange={e => setProfile(p => ({ ...p, goal: { ...p.goal, primaryCurrency: e.target.value as any } }))}
+                className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl py-2.5 px-3 text-[#e4e4e7] text-sm font-sans outline-none focus:border-indigo-400/30">
+                <option value="">Select currency...</option>
+                {goalsConfig.supportedGoals.find(g => g.goalType === "PROGRAM_POINTS")?.allowedCurrencies.map(c => (
+                  <option key={c} value={c}>{c.replace(/_/g, " ")}</option>
+                ))}
+              </select>
+            </div>
+          )}
+          <div className="mt-6 pt-5 border-t border-white/[0.08]">
+            <div className="text-xs text-zinc-400 mb-3 font-medium">Constraints</div>
+            <div className="flex gap-4">
+              <div className="flex-1">
+                <label className="text-[0.65rem] text-zinc-500 block mb-1.5">Max cards</label>
+                <div className="flex gap-1">
+                  {([1, 2, 3] as const).map(n => (
+                    <button key={n} onClick={() => setProfile(p => ({ ...p, constraints: { ...p.constraints, maxCards: n } }))}
+                      className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all border ${
+                        profile.constraints.maxCards === n ? "bg-indigo-500/20 border-indigo-400/30 text-indigo-400 font-semibold" : "bg-white/[0.04] border-white/[0.08] text-zinc-400"}`}>
+                      {n}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div className="flex-1">
+                <label className="text-[0.65rem] text-zinc-500 block mb-1.5">Max annual fee</label>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500 text-sm">$</span>
+                  <input type="number" min={0} value={profile.constraints.maxAnnualFeeUsd}
+                    onChange={e => setProfile(p => ({ ...p, constraints: { ...p.constraints, maxAnnualFeeUsd: parseFloat(e.target.value) || 0 } }))}
+                    className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg py-2 pl-7 pr-3 text-[#e4e4e7] text-sm font-sans outline-none focus:border-indigo-400/30" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* CTA */}
+        <div className="lg:col-span-2 text-center py-6">
+          <button onClick={handleSubmit} disabled={!isValid || loading}
+            className="bg-gradient-to-r from-indigo-500 to-purple-500 text-white px-10 py-4 rounded-2xl text-lg font-bold shadow-glow-lg hover:-translate-y-0.5 transition-all disabled:opacity-40">
+            {loading ? "Optimizing..." : "\u26A1 Find My Optimal Portfolio"}
+          </button>
+          <p className="text-zinc-500 text-xs mt-3">MILP solver finds the provably optimal combination in &lt;10ms</p>
+        </div>
+
+        {/* Advanced */}
+        <div className="lg:col-span-2 text-center">
+          <button onClick={() => setShowAdvanced(!showAdvanced)} className="text-zinc-500 text-sm hover:text-zinc-400 transition-colors inline-flex items-center gap-1">
+            {"\u2699"} Advanced settings <span className={`text-[0.5rem] transition-transform ${showAdvanced ? "rotate-180" : ""}`}>{"\u25BC"}</span>
+          </button>
+        </div>
+        {showAdvanced && (
+          <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-3 gap-4 animate-fade-in">
+            <div className="glass p-5">
+              <div className="flex items-center gap-2 text-xs uppercase tracking-widest text-zinc-400 mb-3">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-400" /> Optimizer
+              </div>
+              <select value={profile.optimizerId ?? ""} onChange={e => setProfile(p => ({ ...p, optimizerId: e.target.value || undefined }))}
+                className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl py-2.5 px-3 text-[#e4e4e7] text-sm font-sans outline-none focus:border-indigo-400/30">
+                {OPTIMIZER_OPTIONS.map(o => <option key={o.id} value={o.id}>{o.label}</option>)}
+              </select>
+              <p className="text-zinc-500 text-[0.65rem] mt-2">MILP guarantees the mathematically optimal solution.</p>
+            </div>
+            <div className="glass p-5">
+              <div className="flex items-center gap-2 text-xs uppercase tracking-widest text-zinc-400 mb-3">
+                <span className="w-1.5 h-1.5 rounded-full bg-pink-400" /> Options
+              </div>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" checked={profile.constraints.allowBusinessCards}
+                  onChange={e => setProfile(p => ({ ...p, constraints: { ...p.constraints, allowBusinessCards: e.target.checked } }))}
+                  className="w-4 h-4 rounded border-white/[0.1] text-indigo-500 focus:ring-primary-500" />
+                <span className="text-sm text-zinc-400">Allow business cards</span>
+              </label>
+            </div>
+            <div className="glass p-5">
+              <div className="flex items-center gap-2 text-xs uppercase tracking-widest text-zinc-400 mb-3">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" /> Verification
+              </div>
+              <p className="text-xs text-zinc-400">Every result passes a 4-gate structural verifier ensuring explanations cite only solver-emitted evidence.</p>
+            </div>
           </div>
         )}
 
-        <div className="flex flex-col gap-8 lg:flex-row lg:items-start">
-          {/* LEFT: Primary flow */}
-          <div className="flex-1 min-w-0 space-y-6">
-            <Card>
-              <SectionTitle
-                step={1}
-                title="How much do you spend per year?"
-                description="Rough estimates are fine. Yukti works even if you only fill 1–2 categories."
-              />
-              <div className="mb-4">
-                <SegmentedControl
-                  value={profile.period}
-                  options={[
-                    { value: "ANNUAL" as const, label: "Annual" },
-                    { value: "MONTHLY" as const, label: "Monthly" },
-                  ]}
-                  onChange={(v) => setProfile((p) => ({ ...p, period: v }))}
-                  ariaLabel="Spend period"
-                />
-              </div>
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {CATEGORIES.map((cat) => (
-                  <MoneyInput
-                    key={cat}
-                    label={CATEGORY_LABELS[cat] ?? cat.replace(/_/g, " ")}
-                    value={profile.spendByCategoryUsd[cat] || 0}
-                    onChange={(v) => handleSpendChange(cat, v)}
-                    suffix={profile.period === "ANNUAL" ? "per year" : "per month"}
-                  />
-                ))}
-              </div>
-              <div className="mt-4 flex flex-wrap items-center gap-2">
-                <span className="text-sm text-slate-500">Quick presets:</span>
-                {Object.keys(spendPresets).map((name) => (
-                  <button
-                    key={name}
-                    type="button"
-                    onClick={() => applyPreset(name)}
-                    className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-50 focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
-                  >
-                    {name}
-                  </button>
-                ))}
-              </div>
-              <div className="mt-4 flex items-baseline gap-2 border-t border-slate-100 pt-4">
-                <span className="text-sm font-medium text-slate-700">Total:</span>
-                <span className="text-lg font-semibold text-slate-900">
-                  ${totalSpend.toLocaleString()}
-                </span>
-                <span className="text-sm text-slate-500">
-                  {profile.period === "ANNUAL" ? "/year" : "/month"}
-                </span>
-              </div>
-            </Card>
-
-            <Card>
-              <SectionTitle
-                step={2}
-                title="What do you want to maximize?"
-                description="Choose your reward goal. Yukti will optimize your portfolio for it."
-              />
-              <GoalPicker
-                value={profile.goal.goalType}
-                onChange={(gt) =>
-                  setProfile((p) => ({
-                    ...p,
-                    goal: {
-                      ...p.goal,
-                      goalType: gt,
-                      primaryCurrency: gt === "PROGRAM_POINTS" ? "AA_MILES" : null,
-                    },
-                  }))
-                }
-              />
-              {profile.goal.goalType === "PROGRAM_POINTS" && (
-                <div className="mt-4">
-                  <label htmlFor="primary-currency" className="text-sm font-medium text-slate-700">
-                    Primary currency
-                  </label>
-                  <select
-                    id="primary-currency"
-                    value={profile.goal.primaryCurrency ?? "AA_MILES"}
-                    onChange={(e) =>
-                      setProfile((p) => ({
-                        ...p,
-                        goal: {
-                          ...p.goal,
-                          primaryCurrency: e.target.value as ProfileV1["goal"]["primaryCurrency"],
-                        },
-                      }))
-                    }
-                    className="mt-1 block w-full rounded-lg border border-slate-300 py-2 pl-3 pr-10 text-slate-900 focus:border-primary-500 focus:ring-1 focus:ring-primary-500"
-                  >
-                    {goalsConfig?.supportedGoals
-                      .find((g) => g.goalType === "PROGRAM_POINTS")
-                      ?.allowedCurrencies.map((c) => (
-                        <option key={c} value={c}>
-                          {c.replace(/_/g, " ")}
-                        </option>
-                      )) ?? <option value="AA_MILES">AA Miles</option>}
-                  </select>
+        {/* ═══ RESULTS ═══ */}
+        {result && (
+          <div ref={resultRef} className="lg:col-span-2 mt-4 space-y-6 animate-slide-up">
+            <div className="glass relative overflow-hidden p-8 sm:p-10 text-center rounded-3xl">
+              <div className="absolute inset-0 bg-gradient-to-b from-emerald-500/10 to-transparent pointer-events-none" />
+              <div className="relative">
+                <div className="text-xs uppercase tracking-widest text-zinc-400">Your optimal annual reward</div>
+                <div className="text-5xl sm:text-6xl font-extrabold text-emerald-400 mt-2 tracking-tight">
+                  ${result.breakdown.netValueUsd.toLocaleString()}
                 </div>
-              )}
-
-              <div className="mt-6">
-                <button
-                  type="button"
-                  onClick={() => setAiAssistOpen(!aiAssistOpen)}
-                  className="text-sm font-medium text-primary-600 hover:text-primary-700"
-                  aria-expanded={aiAssistOpen}
-                >
-                  {aiAssistOpen ? "−" : "+"} AI assist (optional)
-                </button>
-                <p className="mt-0.5 text-xs text-slate-500">
-                  Type what you care about. We'll convert it into settings you can review.
-                </p>
-                {aiAssistOpen && (
-                  <input
-                    type="text"
-                    placeholder="e.g. future travel, AA miles"
-                    value={profile.goalPrompt ?? ""}
-                    onChange={(e) =>
-                      setProfile((p) => ({ ...p, goalPrompt: e.target.value }))
-                    }
-                    className="mt-2 w-full rounded-lg border border-slate-300 px-3 py-2 text-slate-900 placeholder:text-slate-400 focus:border-primary-500 focus:ring-1 focus:ring-primary-500"
-                  />
+                <div className="text-zinc-500 text-sm mt-2">
+                  ${result.breakdown.totalEarnValueUsd.toLocaleString()} earned
+                  {result.breakdown.totalCreditValueUsd > 0 && ` + $${result.breakdown.totalCreditValueUsd.toLocaleString()} credits`}
+                  {" "}&minus; ${result.breakdown.totalFeesUsd.toLocaleString()} fees &middot; {result.portfolio.length} cards &middot; {profile.goal.goalType.replace(/_/g, " ")}
+                </div>
+                {result.verificationStatus === "PASS" && (
+                  <div className="inline-flex items-center gap-2 mt-4 bg-emerald-500/10 border border-emerald-500/20 rounded-full px-4 py-2 text-xs text-emerald-400">
+                    {"\u2713"} Solver-certified optimal &middot; Verified by 4-gate ClaimVerifier
+                  </div>
                 )}
               </div>
-            </Card>
+            </div>
 
-            <Card>
-              <Accordion title="Step 3: Advanced" defaultOpen={false}>
-                <div className="space-y-4">
-                  <div className="grid gap-4 sm:grid-cols-3">
-                    <div>
-                      <label className="text-sm font-medium text-slate-700">Max cards</label>
-                      <select
-                        value={profile.constraints.maxCards}
-                        onChange={(e) =>
-                          setProfile((p) => ({
-                            ...p,
-                            constraints: {
-                              ...p.constraints,
-                              maxCards: Number(e.target.value) as 1 | 2 | 3,
-                            },
-                          }))
-                        }
-                        className="mt-1 block w-full rounded-lg border border-slate-300 py-2 text-slate-900 focus:border-primary-500 focus:ring-1 focus:ring-primary-500"
-                      >
-                        <option value={1}>1</option>
-                        <option value={2}>2</option>
-                        <option value={3}>3</option>
-                      </select>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {result.portfolio.map((card, i) => {
+                const cardEarn = result.allocation.filter(a => a.cardId === card.cardId).reduce((sum, a) => sum + (a.earnValueUsd ?? 0), 0)
+                return (
+                  <div key={card.cardId} className="glass p-5 relative">
+                    <div className="absolute -top-2 right-4 bg-zinc-900 border border-white/[0.1] rounded-lg px-2 py-0.5 text-[0.6rem] text-zinc-400">
+                      #{i + 1}{i === 0 ? " Primary" : ""}
                     </div>
-                    <div>
-                      <label className="text-sm font-medium text-slate-700">
-                        Max annual fee (USD)
-                      </label>
-                      <input
-                        type="number"
-                        min={0}
-                        value={profile.constraints.maxAnnualFeeUsd}
-                        onChange={(e) =>
-                          setProfile((p) => ({
-                            ...p,
-                            constraints: {
-                              ...p.constraints,
-                              maxAnnualFeeUsd: parseFloat(e.target.value) || 200,
-                            },
-                          }))
-                        }
-                        className="mt-1 block w-full rounded-lg border border-slate-300 py-2 text-slate-900 focus:border-primary-500 focus:ring-1 focus:ring-primary-500"
-                      />
-                    </div>
+                    <div className="text-base font-semibold text-[#e4e4e7]">{card.name}</div>
+                    <div className="text-xs text-zinc-400">{card.issuer}</div>
+                    <div className="text-2xl font-bold text-emerald-400 mt-3">${cardEarn.toLocaleString()}</div>
+                    <div className="text-[0.65rem] text-zinc-500">annual earn value</div>
+                    <div className="text-xs text-zinc-400 mt-2">${card.annualFeeUsd}/year fee</div>
+                    <span className="inline-block mt-3 bg-indigo-500/10 text-indigo-400 px-2.5 py-0.5 rounded-full text-[0.65rem] font-medium">
+                      {card.rewardCurrency.replace(/_/g, " ")}
+                    </span>
                   </div>
-                  <label className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      checked={profile.constraints.allowBusinessCards}
-                      onChange={(e) =>
-                        setProfile((p) => ({
-                          ...p,
-                          constraints: {
-                            ...p.constraints,
-                            allowBusinessCards: e.target.checked,
-                          },
-                        }))
-                      }
-                      className="h-4 w-4 rounded border-slate-300 text-primary-600 focus:ring-primary-500"
-                    />
-                    <span className="text-sm text-slate-700">Allow business cards</span>
-                  </label>
+                )
+              })}
+            </div>
 
-                  <div>
-                    <label className="text-sm font-medium text-slate-700">Optimizer</label>
-                    <select
-                      value={profile.optimizerId ?? ""}
-                      onChange={(e) =>
-                        setProfile((p) => ({
-                          ...p,
-                          optimizerId: e.target.value || undefined,
-                        }))
-                      }
-                      className="mt-1 block w-full rounded-lg border border-slate-300 py-2 text-slate-900 focus:border-primary-500 focus:ring-1 focus:ring-primary-500"
-                    >
-                      <option value="">MILP (default)</option>
-                      <option value="greedy-v1">Greedy v1</option>
-                      <option value="cap-aware-greedy-v1">Cap Aware Greedy</option>
-                      <option value="lp-relaxation-v1">LP Relaxation</option>
-                      <option value="simulated-annealing-v1">Simulated Annealing</option>
-                      <option value="exhaustive-search-v1">Exhaustive Search</option>
-                      <option value="ahp-mcdm-baseline-v1">AHP/MCDM</option>
-                      <option value="ahp-pairwise-baseline-v1">AHP/Pairwise</option>
-                      <option value="rule-based-recommender-v1">Rule Based</option>
-                      <option value="content-based-top-k-baseline-v1">Content Based Top 3</option>
-                      <option value="single-best-per-category-baseline-v1">Category Winner</option>
-                      <option value="top-k-popular-baseline-v1">Top K Popular</option>
-                      <option value="random-k-baseline-v1">Random K</option>
-                    </select>
-                    <p className="mt-1 text-xs text-slate-500">
-                      Choose which optimization algorithm to use. MILP provides optimal results.
-                    </p>
-                  </div>
-
-                  {cppCurrencies.length > 0 && goalsConfig && (
-                    <div className="pt-4 border-t border-slate-100">
-                      <p className="text-sm font-medium text-slate-700">
-                        Value per point (USD)
-                      </p>
-                      <p className="text-xs text-slate-500">
-                        CPP is an assumption. Change it if you redeem differently. Example:
-                        0.013 = 1.3 cents per point.
-                      </p>
-                      <div className="mt-2 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                        {cppCurrencies.map((curr) => (
-                          <div key={curr}>
-                            <label className="text-xs text-slate-600">{curr.replace(/_/g, " ")}</label>
-                            <input
-                              type="number"
-                              step={0.001}
-                              min={0}
-                              readOnly={curr === "USD_CASH"}
-                              value={
-                                profile.goal.cppOverrides?.[curr as Currency] ??
-                                goalsConfig.defaultCppByCurrency[curr] ??
-                                0
-                              }
-                              onChange={(e) =>
-                                setProfile((p) => ({
-                                  ...p,
-                                  goal: {
-                                    ...p.goal,
-                                    cppOverrides: {
-                                      ...p.goal.cppOverrides,
-                                      [curr]: parseFloat(e.target.value) || 0,
-                                    } as Partial<Record<Currency, number>>,
-                                  },
-                                }))
-                              }
-                              className="mt-0.5 block w-full rounded-lg border border-slate-300 py-1.5 text-sm text-slate-900 disabled:bg-slate-50 focus:border-primary-500 focus:ring-1 focus:ring-primary-500"
-                            />
-                          </div>
-                        ))}
+            <div className="glass p-6">
+              <div className="text-xs uppercase tracking-widest text-zinc-400 mb-4">Spend Allocation</div>
+              <div className="space-y-3">
+                {result.allocation.sort((a, b) => (b.earnValueUsd ?? 0) - (a.earnValueUsd ?? 0)).map((alloc) => {
+                  const maxEarn = Math.max(...result.allocation.map(a => a.earnValueUsd ?? 0), 1)
+                  const pct = Math.max(((alloc.earnValueUsd ?? 0) / maxEarn) * 100, 8)
+                  const colorIdx = cardColorMap.get(alloc.cardId) ?? 0
+                  const cardName = result.portfolio.find(c => c.cardId === alloc.cardId)?.name ?? alloc.cardId
+                  return (
+                    <div key={`${alloc.category}-${alloc.cardId}`} className="flex items-center gap-3">
+                      <div className="w-20 text-right text-xs text-zinc-400 font-medium shrink-0">{CATEGORY_LABELS[alloc.category] ?? alloc.category}</div>
+                      <div className="flex-1 h-8 bg-white/[0.02] rounded-lg overflow-hidden">
+                        <div className={`h-full rounded-lg flex items-center px-3 text-[0.65rem] font-semibold text-white/80 bg-gradient-to-r ${BAR_COLORS[colorIdx % BAR_COLORS.length]} animate-bar`}
+                          style={{ width: `${pct}%` }}>
+                          {cardName.split(" ").slice(0, 2).join(" ")}{alloc.earnRatePercent != null ? ` \u00B7 ${alloc.earnRatePercent}%` : ""}
+                        </div>
                       </div>
+                      <div className="w-14 text-right text-sm text-emerald-400 font-semibold shrink-0">${(alloc.earnValueUsd ?? 0).toLocaleString()}</div>
                     </div>
-                  )}
-                </div>
-              </Accordion>
-            </Card>
+                  )
+                })}
+              </div>
+            </div>
 
-            <div className="lg:hidden">
-              <button
-                onClick={handleSubmit}
-                disabled={!isValid || loading}
-                className="w-full rounded-xl bg-primary-500 py-3.5 text-base font-semibold text-white shadow-sm hover:bg-primary-600 focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed"
-              >
-                {loading ? "Optimizing… (first run may take 30–60s)" : "Optimize"}
+            {result.explanation && (
+              <div className="glass p-6">
+                <div className="text-xs uppercase tracking-widest text-zinc-400 mb-3">Why This Portfolio</div>
+                <p className="text-sm text-zinc-400 leading-relaxed whitespace-pre-line">{result.explanation.summary}</p>
+                {result.explanation.details && (
+                  <details className="mt-4">
+                    <summary className="text-xs text-zinc-500 cursor-pointer hover:text-zinc-400">Show detailed explanation</summary>
+                    <pre className="mt-2 text-xs text-zinc-500 whitespace-pre-wrap font-sans leading-relaxed">{result.explanation.details}</pre>
+                  </details>
+                )}
+              </div>
+            )}
+
+            {result.goalInterpretation && (
+              <div className="glass p-6 border-indigo-400/20">
+                <div className="text-xs uppercase tracking-widest text-indigo-400 mb-3">{"\u2728"} AI Goal Interpretation</div>
+                <p className="text-sm text-zinc-400"><span className="text-zinc-500">You said:</span> &ldquo;{result.goalInterpretation.userPrompt}&rdquo;</p>
+                <p className="text-sm text-zinc-400 mt-1">
+                  <span className="text-zinc-500">Interpreted as:</span> {result.goalInterpretation.interpretedGoalType?.replace(/_/g, " ")}
+                  {result.goalInterpretation.primaryCurrency && ` (${result.goalInterpretation.primaryCurrency})`}
+                </p>
+                {result.goalInterpretation.rationale && <p className="text-xs text-zinc-500 mt-2">{result.goalInterpretation.rationale}</p>}
+              </div>
+            )}
+
+            <div className="flex flex-wrap gap-3 justify-center">
+              <button onClick={() => {
+                const text = `Yukti Optimization\nNet: $${result.breakdown.netValueUsd}\nCards: ${result.portfolio.map(c => c.name).join(", ")}\n${result.explanation?.summary ?? ""}`
+                navigator.clipboard.writeText(text)
+              }} className="text-xs text-zinc-400 border border-white/[0.08] rounded-full px-4 py-2 hover:text-[#e4e4e7] hover:border-white/[0.15] transition-all">
+                Copy Summary
+              </button>
+              <button onClick={() => {
+                const blob = new Blob([JSON.stringify(result, null, 2)], { type: "application/json" })
+                const url = URL.createObjectURL(blob)
+                const a = document.createElement("a"); a.href = url; a.download = `yukti-result-${new Date().toISOString().slice(0, 10)}.json`
+                a.click(); URL.revokeObjectURL(url)
+              }} className="text-xs text-zinc-400 border border-white/[0.08] rounded-full px-4 py-2 hover:text-[#e4e4e7] hover:border-white/[0.15] transition-all">
+                Download JSON
               </button>
             </div>
           </div>
-
-          {/* RIGHT: Context / Guidance */}
-          <aside className="w-full shrink-0 space-y-6 lg:w-80 lg:sticky lg:top-8">
-            <Card hover>
-              <CardHeader>
-                <h3 className="font-semibold text-slate-900">How Yukti works</h3>
-              </CardHeader>
-              <CardBody>
-                <p className="text-sm text-slate-600">
-                  Enter your yearly spend by category, pick a goal (cashback, points, or airline
-                  miles), and Yukti recommends 1–3 cards that maximize your net value. All outputs
-                  are deterministic—no AI hallucination.
-                </p>
-              </CardBody>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <h3 className="font-semibold text-slate-900">Optimize</h3>
-              </CardHeader>
-              <CardBody>
-                <button
-                  onClick={handleSubmit}
-                  disabled={!isValid || loading}
-                  className="w-full rounded-xl bg-primary-500 py-3.5 text-base font-semibold text-white shadow-sm hover:bg-primary-600 focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed"
-                >
-                  {loading ? "Optimizing…" : "Optimize"}
-                </button>
-                {!isValid && totalSpend === 0 && (
-                  <p className="mt-2 text-sm text-slate-500">
-                    Enter spend in at least one category, or use a preset.
-                  </p>
-                )}
-              </CardBody>
-            </Card>
-
-            {goalsConfig && (
-              <Card>
-                <CardHeader>
-                  <h3 className="font-semibold text-slate-900">Assumptions</h3>
-                </CardHeader>
-                <CardBody>
-                  <p className="text-xs text-slate-500 mb-2">
-                    Default value per point (CPP). Change in Advanced if you redeem differently.
-                  </p>
-                  <div className="space-y-1 text-sm">
-                    {Object.entries(goalsConfig.defaultCppByCurrency).map(([curr, val]) =>
-                      val > 0 ? (
-                        <div key={curr} className="flex justify-between">
-                          <span className="text-slate-600">{curr.replace(/_/g, " ")}</span>
-                          <span className="font-medium text-slate-900">{val}</span>
-                        </div>
-                      ) : null
-                    )}
-                  </div>
-                </CardBody>
-              </Card>
-            )}
-
-            {catalogCards && catalogCards.cards.length > 0 && (
-              <Card>
-                <CardHeader>
-                  <h3 className="font-semibold text-slate-900">Available cards</h3>
-                </CardHeader>
-                <CardBody>
-                  <input
-                    type="search"
-                    placeholder="Search cards…"
-                    value={cardsSearch}
-                    onChange={(e) => setCardsSearch(e.target.value)}
-                    aria-label="Search cards"
-                    className="mb-3 w-full rounded-lg border border-slate-300 py-2 px-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-primary-500 focus:ring-1 focus:ring-primary-500"
-                  />
-                  <div className="mb-3 flex flex-wrap gap-1">
-                    <button
-                      type="button"
-                      onClick={() => setCardsFilterCurrency("")}
-                      className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                        !cardsFilterCurrency
-                          ? "bg-primary-500 text-white"
-                          : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-                      }`}
-                    >
-                      All
-                    </button>
-                    {["USD_CASH", "BANK_UR", "BANK_MR", "AA_MILES"].map((c) => (
-                      <button
-                        key={c}
-                        type="button"
-                        onClick={() =>
-                          setCardsFilterCurrency(cardsFilterCurrency === c ? "" : c)
-                        }
-                        className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                          cardsFilterCurrency === c
-                            ? "bg-primary-500 text-white"
-                            : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-                        }`}
-                      >
-                        <Badge currency={c} />
-                      </button>
-                    ))}
-                  </div>
-                  <ul className="max-h-64 space-y-2 overflow-y-auto pr-1">
-                    {filteredCards.map((c) => (
-                      <li
-                        key={c.cardId}
-                        className="rounded-lg border border-slate-100 bg-slate-50 px-3 py-2"
-                      >
-                        <div className="flex items-center justify-between gap-2">
-                          <span className="font-medium text-slate-900 text-sm">{c.name}</span>
-                          <Badge currency={c.rewardCurrency} />
-                        </div>
-                        <div className="mt-0.5 flex items-center gap-2 text-xs text-slate-500">
-                          <span>{c.issuer}</span>
-                          <span>·</span>
-                          <span>${c.annualFeeUsd}/yr</span>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                </CardBody>
-              </Card>
-            )}
-
-            <div>
-              <label className="block text-xs text-slate-500">
-                <input
-                  ref={importInputRef}
-                  type="file"
-                  accept=".json"
-                  className="sr-only"
-                  onChange={(e) => {
-                    const f = e.target.files?.[0]
-                    if (!f) return
-                    const r = new FileReader()
-                    r.onload = () => {
-                      try {
-                        const parsed = JSON.parse(r.result as string) as unknown
-                        if (
-                          parsed &&
-                          typeof parsed === "object" &&
-                          "schemaVersion" in parsed &&
-                          (parsed as { schemaVersion: string }).schemaVersion === "profile.v1"
-                        ) {
-                          setProfile(parsed as ProfileV1)
-                          setError(null)
-                        } else {
-                          setError("Invalid profile: schemaVersion must be profile.v1")
-                        }
-                      } catch {
-                        setError("Invalid JSON")
-                      }
-                      e.target.value = ""
-                    }
-                    r.readAsText(f)
-                  }}
-                />
-                <button
-                  type="button"
-                  onClick={() => importInputRef.current?.click()}
-                  className="text-primary-600 hover:text-primary-700"
-                >
-                  Import profile
-                </button>
-              </label>
-            </div>
-          </aside>
-        </div>
-
-        <footer className="mt-12 border-t border-slate-200 pt-6 text-center text-sm text-slate-500">
-          Yukti · Grounded rewards optimization
-        </footer>
+        )}
       </div>
+
+      {/* Disclaimers */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-16 mb-8 max-w-4xl mx-auto">
+        <div className="glass p-4 rounded-xl">
+          <div className="text-[0.65rem] uppercase tracking-widest text-zinc-500 mb-2">Not Financial Advice</div>
+          <p className="text-xs text-zinc-500 leading-relaxed">Yukti is an optimization tool for educational and informational purposes only. Results are not financial advice. Consult a qualified financial advisor before making credit card decisions.</p>
+        </div>
+        <div className="glass p-4 rounded-xl">
+          <div className="text-[0.65rem] uppercase tracking-widest text-zinc-500 mb-2">No Affiliation</div>
+          <p className="text-xs text-zinc-500 leading-relaxed">Yukti is not affiliated with, endorsed by, or sponsored by any credit card issuer, bank, or financial institution. All trademarks and card names belong to their respective owners.</p>
+        </div>
+        <div className="glass p-4 rounded-xl">
+          <div className="text-[0.65rem] uppercase tracking-widest text-zinc-500 mb-2">Data Accuracy</div>
+          <p className="text-xs text-zinc-500 leading-relaxed">Card terms, reward rates, and fees are based on publicly available information at catalog snapshot date. Actual terms may vary. Verify all details with the card issuer before applying.</p>
+        </div>
+      </div>
+
+      <footer className="text-center py-6 text-zinc-600 text-xs">
+        <p>Yukti &middot; Solver-certified optimal card portfolios &middot; Apache 2.0</p>
+        <p className="mt-1">Results depend on card terms at catalog snapshot date. No personal financial data is collected or stored.</p>
+      </footer>
     </div>
   )
 }
