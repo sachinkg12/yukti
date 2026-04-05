@@ -17,7 +17,7 @@ __pycache__/
 .venv/
 
 # ── Bench artifacts ───────────────────────────────────────────────────
-artifacts/
+/artifacts/
 yukti-bench/artifacts/
 
 # ── yukti-web ─────────────────────────────────────────────────────────
