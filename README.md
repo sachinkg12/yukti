@@ -1,6 +1,8 @@
 # Yukti
 
+[![CI](https://github.com/sachinkg12/yukti/actions/workflows/ci.yml/badge.svg)](https://github.com/sachinkg12/yukti/actions/workflows/ci.yml)
 [![DOI](https://zenodo.org/badge/1199192551.svg)](https://doi.org/10.5281/zenodo.19425818)
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 Credit card portfolio optimization via mixed-integer linear programming (MILP) with structurally verified explanations.
 
