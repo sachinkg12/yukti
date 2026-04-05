@@ -1,35 +1,35 @@
 {
   "version" : "1.0",
   "valuationPolicies" : [ {
-    "centsPerUnit" : 100,
     "currency" : "USD",
     "id" : "usd-cashback",
-    "goal" : "CASHBACK"
+    "goal" : "CASHBACK",
+    "centsPerUnit" : 100
   }, {
-    "centsPerUnit" : 1.25,
     "currency" : "CHASE_UR",
     "id" : "chase-ur-flex",
-    "goal" : "FLEX_POINTS"
+    "goal" : "FLEX_POINTS",
+    "centsPerUnit" : 1.25
   }, {
-    "centsPerUnit" : 1.2,
     "currency" : "AMEX_MR",
     "id" : "amex-mr-flex",
-    "goal" : "FLEX_POINTS"
+    "goal" : "FLEX_POINTS",
+    "centsPerUnit" : 1.2
   }, {
-    "centsPerUnit" : 1.25,
     "currency" : "CITI_TYP",
     "id" : "citi-ty-flex",
-    "goal" : "FLEX_POINTS"
+    "goal" : "FLEX_POINTS",
+    "centsPerUnit" : 1.25
   }, {
-    "centsPerUnit" : 1.0,
     "currency" : "CAP1_VENTURE",
     "id" : "cap1-venture-flex",
-    "goal" : "FLEX_POINTS"
+    "goal" : "FLEX_POINTS",
+    "centsPerUnit" : 1.0
   }, {
-    "centsPerUnit" : 1.3,
     "currency" : "AVIOS",
     "id" : "avios-program",
-    "goal" : "PROGRAM_POINTS"
+    "goal" : "PROGRAM_POINTS",
+    "centsPerUnit" : 1.3
   } ],
   "cards" : [ {
     "id" : "aeroplan-card",
