@@ -1,5 +1,7 @@
 # Yukti
 
+[![DOI](https://zenodo.org/badge/1199192551.svg)](https://doi.org/10.5281/zenodo.19425818)
+
 Credit card portfolio optimization via mixed-integer linear programming (MILP) with structurally verified explanations.
 
 Yukti selects up to 3 cards from a 70-card US credit card catalog and allocates spending across 6 categories to maximize net annual reward value under piecewise-linear reward caps, goal-dependent multi-currency valuation, and fee constraints. The MILP achieves solver-certified optimality on all benchmark instances, independently confirmed by exhaustive enumeration.

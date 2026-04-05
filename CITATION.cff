@@ -1,0 +1,12 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+  - family-names: Gupta
+    given-names: Sachin
+    orcid: https://orcid.org/0009-0009-7422-4967
+title: "Yukti: Credit Card Portfolio Optimization via MILP"
+version: 1.0.0
+date-released: 2026-04-05
+url: https://github.com/sachinkg12/yukti
+doi: 10.5281/zenodo.19425818
+license: Apache-2.0
