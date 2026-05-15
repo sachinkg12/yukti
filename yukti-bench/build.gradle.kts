@@ -12,6 +12,7 @@ dependencies {
     implementation(project(":yukti-core"))
     implementation(project(":yukti-catalog"))
     implementation(project(":yukti-engine"))
+    implementation(project(":yukti-evaluation"))
     implementation("com.fasterxml.jackson.core:jackson-databind:2.17.2")
 }
 
@@ -231,6 +232,33 @@ tasks.register<JavaExec>("runScalingStudy") {
     mainClass.set("io.yukti.bench.ScalingStudyRunner")
     val outDir = rootProject.file("artifacts/bench/v2/scaling")
     args(outDir.absolutePath)
+    doFirst {
+        outDir.mkdirs()
+    }
+}
+
+// Explanation evaluation: paired grounded vs ungrounded narration with hallucination,
+// fluency, and LLM-as-judge metrics. Requires API keys for the configured providers.
+tasks.register<JavaExec>("runExplanationEval") {
+    group = "bench"
+    description = "Run grounded vs ungrounded explanation evaluation; writes JSON to artifacts/bench/v2/explanation_eval_*.json"
+    classpath = sourceSets["main"].runtimeClasspath
+    mainClass.set("io.yukti.bench.explanation.ExplanationEvalRunner")
+    val outDir = rootProject.file("artifacts/bench/v2")
+    doFirst {
+        outDir.mkdirs()
+    }
+}
+
+// Judge-only re-run: take a saved explanation_eval_results.json (with perInstance
+// populated), build matched pairs, and run only the LLM-as-judge preference pass.
+// Used to recover from cases where the main runner's judge was skipped.
+tasks.register<JavaExec>("runJudgeOnly") {
+    group = "bench"
+    description = "Re-run only the judge pass against a saved results JSON; writes matched-pair scores"
+    classpath = sourceSets["main"].runtimeClasspath
+    mainClass.set("io.yukti.bench.explanation.JudgeOnlyRunner")
+    val outDir = rootProject.file("artifacts/bench/v2")
     doFirst {
         outDir.mkdirs()
     }

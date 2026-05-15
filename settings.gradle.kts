@@ -5,6 +5,7 @@ include(
     "yukti-core",
     "yukti-catalog",
     "yukti-engine",
+    "yukti-evaluation",
     "yukti-api",
     "yukti-web",
     "yukti-bench",

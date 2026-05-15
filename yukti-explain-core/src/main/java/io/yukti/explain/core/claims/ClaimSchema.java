@@ -84,4 +84,46 @@ public final class ClaimSchema {
         }
         throw new IllegalArgumentException("Unknown claimType: " + s);
     }
+
+    /**
+     * Lenient variant for evaluation use only. Skips claims with unknown or missing
+     * claimType, malformed records, or truncated JSON instead of rejecting the entire
+     * batch. Returns only the well-formed claims that were successfully parsed.
+     *
+     * <p>Intended for the explanation evaluation pipeline where we want to capture
+     * partial LLM output rather than discard everything when one claim is malformed.
+     * Production paths must use {@link #parseClaimsJson(String)} which is strict.
+     */
+    public static List<Claim> parseClaimsJsonLenient(String json) {
+        if (json == null || json.isBlank()) return List.of();
+        try {
+            List<Map<String, Object>> list = OM.readValue(json, new TypeReference<>() {});
+            List<Claim> claims = new ArrayList<>();
+            for (Map<String, Object> map : list) {
+                try {
+                    String claimId = getString(map, "claimId");
+                    if (claimId == null || claimId.isBlank()) continue;
+                    String claimTypeStr = getString(map, "claimType");
+                    if (claimTypeStr == null || claimTypeStr.isBlank()) continue;
+                    ClaimType claimType;
+                    try {
+                        claimType = parseClaimType(claimTypeStr);
+                    } catch (IllegalArgumentException e) {
+                        continue; // skip claims with unknown types
+                    }
+                    String text = getString(map, "text");
+                    if (text == null) continue;
+                    List<String> citedEvidenceIds = getStringList(map, "citedEvidenceIds");
+                    List<String> citedEntities = getStringList(map, "citedEntities");
+                    List<String> citedNumbers = getStringList(map, "citedNumbers");
+                    claims.add(new Claim(claimId, claimType, text, citedEvidenceIds, citedEntities, citedNumbers));
+                } catch (RuntimeException ignored) {
+                    // skip malformed individual claim, continue with the rest
+                }
+            }
+            return claims;
+        } catch (Exception e) {
+            return List.of();
+        }
+    }
 }

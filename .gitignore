@@ -25,3 +25,4 @@ yukti-web/node_modules/
 yukti-web/dist/
 yukti-web/.env
 yukti-web/tsconfig.tsbuildinfo
+.env
