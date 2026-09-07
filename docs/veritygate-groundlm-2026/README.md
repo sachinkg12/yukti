@@ -77,12 +77,14 @@ for rater capture and the verifier microbenchmark are documented in
 
 ## Release identity
 
-- Intended Git tag: `veritygate-groundlm-2026-v1.0.0`
-- Public release URL: pending publication
-- Zenodo supplementary version DOI: pending publication
+- Git tag: `veritygate-groundlm-2026-v1.0.0`
+- Versioned code release:
+  `https://github.com/sachinkg12/yukti/releases/tag/veritygate-groundlm-2026-v1.0.0`
+- Zenodo supplementary version DOI:
+  `https://doi.org/10.5281/zenodo.22641534`
 
-Replace the two pending fields after the GitHub release and Zenodo record are
-public. Cite the version-specific Zenodo DOI so the evidence files are pinned.
+The Zenodo link is the version-specific DOI for the evidence files, not the
+all-versions DOI of the separate Yukti software record.
 
 ## Credentials and generated data
 

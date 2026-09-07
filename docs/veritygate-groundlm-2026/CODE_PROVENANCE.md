@@ -34,6 +34,8 @@ already collected paper-grade results.
 
 ## Release binding
 
-Before publication, record the final GitHub release commit and tag here and in
-the Zenodo supplement's `CODE_POINTER.md`. The intended tag is
-`veritygate-groundlm-2026-v1.0.0`.
+The camera-ready code release is identified by the annotated tag
+[`veritygate-groundlm-2026-v1.0.0`](https://github.com/sachinkg12/yukti/releases/tag/veritygate-groundlm-2026-v1.0.0).
+The Zenodo supplement's `CODE_POINTER.md` records the tag's immutable target
+commit so the evidence package does not depend on the repository's moving
+default branch.

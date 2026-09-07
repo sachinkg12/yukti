@@ -7,5 +7,11 @@ authors:
     given-names: Sachin
     orcid: "https://orcid.org/0009-0009-7422-4967"
 version: 1.0.0
+date-released: 2026-09-07
 license: Apache-2.0
 repository-code: "https://github.com/sachinkg12/yukti"
+url: "https://github.com/sachinkg12/yukti/releases/tag/veritygate-groundlm-2026-v1.0.0"
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.22641534"
+    description: "VerityGate GroundLM 2026 supplementary artifact"
