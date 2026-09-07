@@ -12,7 +12,9 @@
       "enum": [
         "WINNER_BY_CATEGORY",
         "CAP_HIT",
+        "EARN_RATE",
         "FEE_BREAK_EVEN",
+        "PORTFOLIO_STOP",
         "RESULT_BREAKDOWN",
         "PORTFOLIO_SUMMARY",
         "ASSUMPTION",

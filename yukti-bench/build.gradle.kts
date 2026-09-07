@@ -107,12 +107,12 @@ tasks.register<JavaExec>("runBenchAllSolvers") {
     }
 }
 
-// === RewardsBench v2 tasks (200 profiles × 11 optimizers) ===
+// === RewardsBench v2 tasks (200 profiles × 13 optimizers) ===
 
-// Full v2 benchmark: all 200 profiles × 11 optimizers
+// Full v2 benchmark: all 200 profiles × 13 optimizers
 tasks.register<JavaExec>("runBenchV2") {
     group = "bench"
-    description = "Run RewardsBench v2 (200 profiles × 11 optimizers) — full evaluation"
+    description = "Run RewardsBench v2 (200 profiles × 13 optimizers) — full evaluation"
     classpath = sourceSets["main"].runtimeClasspath
     mainClass.set("io.yukti.bench.MultiSolverBenchmarkRunner")
     systemProperty("io.yukti.bench.version", "v2")
@@ -123,10 +123,10 @@ tasks.register<JavaExec>("runBenchV2") {
     }
 }
 
-// Main evaluation only: 150 profiles (curated + generated, no holdout) × 11 optimizers
+// Main evaluation only: 150 profiles (curated + generated, no holdout) × 13 optimizers
 tasks.register<JavaExec>("runBenchV2Main") {
     group = "bench"
-    description = "Run RewardsBench v2 main evaluation (150 profiles × 11 optimizers)"
+    description = "Run RewardsBench v2 main evaluation (150 profiles × 13 optimizers)"
     classpath = sourceSets["main"].runtimeClasspath
     mainClass.set("io.yukti.bench.MultiSolverBenchmarkRunner")
     systemProperty("io.yukti.bench.version", "v2")
@@ -138,10 +138,10 @@ tasks.register<JavaExec>("runBenchV2Main") {
     }
 }
 
-// Holdout only: 50 holdout profiles × 11 optimizers
+// Holdout only: 50 holdout profiles × 13 optimizers
 tasks.register<JavaExec>("runBenchV2Holdout") {
     group = "bench"
-    description = "Run RewardsBench v2 holdout evaluation (50 profiles × 11 optimizers)"
+    description = "Run RewardsBench v2 holdout evaluation (50 profiles × 13 optimizers)"
     classpath = sourceSets["main"].runtimeClasspath
     mainClass.set("io.yukti.bench.MultiSolverBenchmarkRunner")
     systemProperty("io.yukti.bench.version", "v2")
@@ -211,10 +211,10 @@ tasks.register<JavaExec>("runAblationSoftCreditsOff") {
     doFirst { outFile.parentFile.mkdirs() }
 }
 
-// BLS external validation: 50 BLS-derived profiles × 11 optimizers
+// BLS external validation: 50 BLS-derived profiles × 13 optimizers
 tasks.register<JavaExec>("runBenchV2BLS") {
     group = "bench"
-    description = "Run RewardsBench v2 BLS external validation (50 BLS profiles × 11 optimizers)"
+    description = "Run RewardsBench v2 BLS external validation (50 BLS profiles × 13 optimizers)"
     classpath = sourceSets["main"].runtimeClasspath
     mainClass.set("io.yukti.bench.BLSBenchmarkRunner")
     val outDir = rootProject.file("artifacts/bench/v2/bls")
@@ -264,10 +264,19 @@ tasks.register<JavaExec>("runJudgeOnly") {
     }
 }
 
-// v2 sensitivity sweep: all 11 optimizers × 9 configs
+// Verifier microbench: latency/throughput/heap on representative input.
+// No LLM calls, no API costs. Used for §4 deployment cost figures in paper.
+tasks.register<JavaExec>("runVerifierMicroBench") {
+    group = "bench"
+    description = "Microbench for ClaimVerifier — p50/p95/p99 latency, throughput, JVM heap"
+    classpath = sourceSets["main"].runtimeClasspath
+    mainClass.set("io.yukti.bench.verifier.VerifierMicroBench")
+}
+
+// v2 sensitivity sweep: all 13 optimizers × 9 configs
 tasks.register<JavaExec>("runSensitivitySweepV2") {
     group = "bench"
-    description = "Run v2 sensitivity sweeps (11 optimizers × 9 configs)"
+    description = "Run v2 sensitivity sweeps (13 optimizers × 9 configs)"
     classpath = sourceSets["main"].runtimeClasspath
     mainClass.set("io.yukti.bench.SensitivitySweepRunner")
     systemProperty("io.yukti.bench.version", "v2")

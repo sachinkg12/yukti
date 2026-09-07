@@ -4,7 +4,7 @@ import java.nio.file.Path;
 import java.util.List;
 
 /**
- * Runs all 11 optimizers on BLS-derived profiles.
+ * Runs all 13 primary optimizers on BLS-derived profiles.
  * Outputs one JSON per optimizer to artifacts/bench/v2/bls/.
  *
  * <p>This validates external generalization: do optimizer rankings hold

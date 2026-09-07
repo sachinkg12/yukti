@@ -4,8 +4,8 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * Parsed preferences from free-text (or structured input).
- * Phase-1: deterministic parser; optional AI later.
+ * Parsed preferences from free-text or structured input. Deterministic parsers
+ * and optional model-assisted interpreters both map into this domain object.
  */
 public final class ParsedPreferences {
     private final UserGoal userGoal;

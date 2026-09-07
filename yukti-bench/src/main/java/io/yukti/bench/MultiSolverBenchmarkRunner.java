@@ -4,7 +4,7 @@ import java.nio.file.Path;
 import java.util.List;
 
 /**
- * Runs benchmark with all 11 optimizers and writes one JSON per optimizer.
+ * Runs the benchmark with all 13 primary optimizers and writes one JSON per optimizer.
  * Supports v1 (50 profiles) and v2 (200 profiles) via io.yukti.bench.version.
  * Supports subset filtering via io.yukti.bench.subset (main/holdout/all).
  */

@@ -60,7 +60,7 @@ public final class GreedyPortfolioOptimizerV1 implements Optimizer {
         }
         if (annualSpend.isEmpty()) return OptimizationResult.empty("No spend provided.");
 
-        // Phase-1: hard clamp to at most 3 cards (spec).
+        // The public application contract allows at most three cards.
         int maxCards = Math.min(3, constraints.getMaxCards());
 
         ValuationModel val = valuationModel != null ? valuationModel : new ValuationModelV1(catalog);

@@ -356,6 +356,6 @@ class GreedyPortfolioOptimizerV1Test {
         assertEquals(r1.getAllocation(), r2.getAllocation());
         assertEquals(0, r1.getBreakdown().getNet().getAmount().compareTo(r2.getBreakdown().getNet().getAmount()));
         assertEquals(r1.getEvidenceBlocks().size(), r2.getEvidenceBlocks().size());
-        assertTrue(r1.getPortfolioIds().size() <= 3, "Phase-1 max 3 cards");
+        assertTrue(r1.getPortfolioIds().size() <= 3, "Application contract allows at most 3 cards");
     }
 }

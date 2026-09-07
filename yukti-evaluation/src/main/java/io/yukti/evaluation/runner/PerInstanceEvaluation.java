@@ -4,6 +4,7 @@ import io.yukti.engine.explainability.llm.LlmProviderId;
 import io.yukti.evaluation.fluency.FluencyScore;
 import io.yukti.evaluation.hallucination.HallucinationReport;
 import io.yukti.evaluation.verifier.VerifierReport;
+import io.yukti.explain.core.claims.Claim;
 
 import java.util.List;
 import java.util.Objects;
@@ -36,7 +37,8 @@ public record PerInstanceEvaluation(
     List<FluencyScore> fluencyScores,
     VerifierReport verifierReport,
     boolean schemaFailed,
-    String fluencySource
+    String fluencySource,
+    List<Claim> claims
 ) {
     public PerInstanceEvaluation {
         Objects.requireNonNull(profileId);
@@ -52,6 +54,27 @@ public record PerInstanceEvaluation(
         if (fluencySource == null) {
             fluencySource = "unknown";
         }
+        claims = claims != null ? List.copyOf(claims) : List.of();
+    }
+
+    /**
+     * Backwards-compatible constructor (pre-claims field). Used by legacy callers
+     * that did not pass structured claim objects through.
+     */
+    public PerInstanceEvaluation(
+        String profileId,
+        String goal,
+        NarratorVariant variant,
+        LlmProviderId modelId,
+        String renderedText,
+        HallucinationReport hallucinations,
+        List<FluencyScore> fluencyScores,
+        VerifierReport verifierReport,
+        boolean schemaFailed,
+        String fluencySource
+    ) {
+        this(profileId, goal, variant, modelId, renderedText, hallucinations, fluencyScores,
+            verifierReport, schemaFailed, fluencySource, List.of());
     }
 
     /**
@@ -69,6 +92,6 @@ public record PerInstanceEvaluation(
         List<FluencyScore> fluencyScores
     ) {
         this(profileId, goal, variant, modelId, renderedText, hallucinations, fluencyScores,
-            VerifierReport.allPass(0), false, "unknown");
+            VerifierReport.allPass(0), false, "unknown", List.of());
     }
 }

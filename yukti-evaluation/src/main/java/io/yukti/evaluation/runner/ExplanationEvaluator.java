@@ -80,7 +80,8 @@ public final class ExplanationEvaluator {
         }
         return new PerInstanceEvaluation(
             profileId, goal, variant, modelId, renderedText, report, scores,
-            verifierReport, schemaFailed, fluencySource);
+            verifierReport, schemaFailed, fluencySource,
+            claims != null ? claims : List.of());
     }
 
     /**

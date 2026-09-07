@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-Description: Yukti Phase-1 - API Gateway HTTP API + Lambda
+Description: Yukti legacy /optimize adapter - API Gateway HTTP API + Lambda
 
 Globals:
   Function:

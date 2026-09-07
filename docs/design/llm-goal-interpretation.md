@@ -1,57 +1,67 @@
-# LLM-first goal interpretation (design)
+# Goal interpretation architecture
 
-## Problem
+This document describes the implemented optional model-assisted goal path.
+Downstream optimization always consumes one validated `UserGoal`, regardless
+of how that goal was obtained.
 
-When the user types a **multi-faceted** or **ambiguous** goal in AI Assist, the current **keyword parser** cannot handle it well. Example:
+## Runtime flow
 
-- *"I am looking for shopping, with some travel and the goal is to maximize money."*
+1. `POST /v1/optimize` receives a structured `goal` and optionally a
+   `goalPrompt`.
+2. Without `goalPrompt`, the structured goal is mapped directly.
+3. With `goalPrompt`, `V1ApiHandler` calls the configured `GoalInterpreter`.
+4. `DeterministicGoalInterpreter` is the default implementation.
+5. `LlmGoalInterpreter` is selected only when `GOAL_LLM_ENABLED=true` and an
+   OpenAI provider can be created from `OPENAI_API_KEY`.
+6. Model output is restricted to the supported goal schema. Invalid, missing,
+   or failed output uses the deterministic interpreter.
+7. `OptimizationMapperV1` combines the interpretation with explicit preference
+   and CPP inputs, then constructs the same `OptimizationRequest` used by the
+   non-LLM path.
 
-The user has effectively stated:
+```text
+goalPrompt ----> GoalInterpreter ----> validated GoalInterpretation
+                       |                         |
+structured goal -------+-------------------------+
+                                                 v
+                                     OptimizationRequest -> Optimizer
+```
 
-- **Shopping** → could mean cashback, retail rewards, or general spend.
-- **Some travel** → points/miles or transferable points.
-- **Maximize money** → cashback / total value.
+## Supported output vocabulary
 
-Today we must pick a **single** goal (CASHBACK | FLEX_POINTS | PROGRAM_POINTS) and optional primary currency. The deterministic parser would likely default to one (e.g. CASHBACK from "money") and ignore the rest, with no way to disambiguate or confirm with the user.
+- `CASHBACK`
+- `FLEX_POINTS`
+- `PROGRAM_POINTS`, with a supported primary reward currency
 
-## Proposed direction: LLM-first interpretation
+The interpreter may also return a short rationale for display. It does not
+produce card IDs, reward rates, valuations, constraints, or allocations.
+Explicit preferred currencies and CPP overrides remain typed request fields.
 
-**Yes — going to an LLM first for complex prompts is the right direction.** Suggested flow:
+## Safety boundary
 
-1. **User submits** a goal prompt (e.g. "shopping, some travel, maximize money").
-2. **Backend calls an LLM** with:
-   - The user’s free-text prompt.
-   - A **fixed schema** of what we support: goal types (CASHBACK, FLEX_POINTS, PROGRAM_POINTS), primary currencies (e.g. AA_MILES, AVIOS, BANK_UR, …), and short descriptions for each.
-3. **LLM returns** a structured interpretation, for example:
-   - **Primary goal** + optional **primary currency** (for PROGRAM_POINTS).
-   - Optional **secondary** or **alternatives** (e.g. "User also mentioned travel; alternative: PROGRAM_POINTS").
-   - Optional **short rationale** (e.g. "Maximize money chosen as primary; travel mentioned as secondary.").
-4. **We then** either:
-   - **Option A:** Use the primary interpretation as the single `UserGoal` for this run (same as today’s single-goal optimizer), and optionally show the rationale + alternatives in the UI (“We’re optimizing for cashback to maximize money; you also mentioned travel — [Optimize for travel instead]”).
-   - **Option B:** If the LLM returns multiple plausible interpretations, **show the user a small set of choices** (“We understood: 1) Maximize money (cashback), 2) Travel (points/miles). Which should we use?”) and run optimization after they pick one.
+The model is an input adapter, not a decision engine:
 
-So we **get meaning from the LLM**, **map strictly to the options we support**, and **then** either auto-pick one category or present options and come up with one goal for the run.
+- its response must map to closed enum-like values;
+- malformed output cannot enter the optimizer;
+- the deterministic path remains available for every request;
+- card rules and valuations come from versioned application data; and
+- the selected optimizer remains responsible for all portfolio decisions.
 
-## Where it plugs in
+## Configuration
 
-- **PreferenceParser** (or a new **GoalInterpreter** interface): today `PreferenceParserV1` is deterministic. We could:
-  - Add an **LlmGoalInterpreter** that:
-    - For “simple” prompts (e.g. single keyword), optionally still use the fast deterministic parser.
-    - For longer or multi-clause prompts, call the LLM, then map the LLM output to our schema and return a single `ParsedPreferences` (and optionally a “disambiguation” payload for the UI).
-  - Keep the same **downstream contract**: optimizer still receives one `UserGoal` per request.
-- **API**: either same `POST /v1/optimize` with `goalPrompt` (backend chooses parser path), or an optional **`POST /v1/interpret-goal`** that returns structured options + primary recommendation so the frontend can show “We interpreted as X; confirm or change” before calling optimize.
+```bash
+export OPENAI_API_KEY=sk-...
+export GOAL_LLM_ENABLED=true
+./gradlew :yukti-api:runServer
+```
 
-## Schema we support (for LLM prompt)
+If either the switch or credential is absent, goal interpretation stays local
+and deterministic. `NARRATION_LLM_ENABLED` controls a different path and is not
+required for goal interpretation.
 
-- **GoalType:** CASHBACK, FLEX_POINTS, PROGRAM_POINTS.
-- **Primary currency (only for PROGRAM_POINTS):** AA_MILES, AVIOS (and any other we add).
-- **Short descriptions** to give the LLM: e.g. “CASHBACK = maximize cash back / statement credit”, “FLEX_POINTS = transferable points (Chase UR, Amex MR, etc.)”, “PROGRAM_POINTS = airline/hotel program miles (e.g. AA, Avios)”.
+## Extension contract
 
-The LLM must **only** output one of these enum-like values (plus optional rationale and alternatives); we validate and fall back to deterministic parser or default (e.g. CASHBACK) if the LLM output is invalid or missing.
-
-## Summary
-
-- **Should we go to the LLM first for meaning and then map to our options?** Yes, for complex or multi-goal prompts.
-- **Do we still end up with one category for the run?** Yes — we either auto-select the primary interpretation or let the user pick one from the options we support, then run the existing single-goal optimizer with that choice.
-
-This doc can be used to implement an LLM-based goal interpreter and, if desired, a small disambiguation/confirmation step in the UI.
+A new interpreter must implement `GoalInterpreter`, return only supported goal
+types/currencies, preserve explicit user preferences, and define a deterministic
+failure path. Adding a provider must not change `OptimizationRequest` or the
+optimizer interfaces.

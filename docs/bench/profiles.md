@@ -1,5 +1,12 @@
 # RewardsBench v1: 50 profiles
 
+> This file is the frozen v1 profile specification. RewardsBench v2 extends it
+> to 200 profiles: these 50 curated cases, 100 generated cases with seed 42,
+> and a 50-profile holdout with seed 99. The v2 main evaluation uses the first
+> 150 profiles across three goals (450 profile-goal instances) and compares 13
+> primary optimizer strategies. See `profile_ids_v2.json` for the frozen IDs;
+> `BenchmarkHarness` and `ProfileGenerator` contain the executable construction.
+
 This document lists all 50 benchmark profiles used in RewardsBench v1. Spend amounts are in **USD annual** (monthly profiles are listed with their monthly spend; the harness annualizes by ×12). Categories: GROCERIES, DINING, GAS, TRAVEL, ONLINE, OTHER. Only non-zero categories are shown.
 
 **Taxonomy:** 6 baselines, 10 category-dominant, 20 cap-boundary, 4 goal-discriminator, 10 monthly. Total 40 annual + 10 monthly.

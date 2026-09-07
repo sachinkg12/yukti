@@ -1,5 +1,7 @@
 package io.yukti.bench.explanation;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import io.yukti.engine.explainability.llm.LlmProviderId;
 import io.yukti.evaluation.runner.EvaluationConfig;
 import io.yukti.evaluation.runner.EvaluationJsonWriter;
@@ -7,6 +9,7 @@ import io.yukti.evaluation.runner.EvaluationResults;
 import io.yukti.evaluation.runner.EvaluationSummarizer;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Instant;
@@ -105,5 +108,27 @@ public final class ExplanationEvalRunner {
 
         System.out.println("Instances: " + results.perInstance().size());
         System.out.println("Judged pairs: " + results.judgedPairs().size());
+
+        // Optional rater-capture side-channel: if -Dio.yukti.eval.captureRater=<path>
+        // is set, write the per-instance claims + evidence allowlists to a separate
+        // JSON file for downstream rater-study extraction. Existing eval output is
+        // unaffected.
+        String raterCapturePath = System.getProperty("io.yukti.eval.captureRater");
+        if (raterCapturePath != null && !raterCapturePath.isBlank()) {
+            Path raterFile = Paths.get(raterCapturePath);
+            try {
+                List<PairedNarratorRunner.RaterCaptureRow> capture = runner.raterCapture();
+                ObjectMapper mapper = new ObjectMapper();
+                mapper.enable(SerializationFeature.INDENT_OUTPUT);
+                Files.createDirectories(raterFile.toAbsolutePath().getParent());
+                mapper.writeValue(raterFile.toFile(), capture);
+                int totalClaims = capture.stream().mapToInt(r -> r.claims().size()).sum();
+                System.out.println("Wrote rater capture: " + raterFile
+                    + " (" + capture.size() + " instances, " + totalClaims + " claims)");
+            } catch (Exception e) {
+                System.err.println("Rater capture write failed: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
     }
 }

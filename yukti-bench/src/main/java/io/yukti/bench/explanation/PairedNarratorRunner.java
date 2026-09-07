@@ -35,6 +35,7 @@ import io.yukti.evaluation.verifier.VerifierReport;
 import io.yukti.evaluation.verifier.VerifierReportFactory;
 import io.yukti.explain.core.claims.Claim;
 import io.yukti.explain.core.claims.ClaimSchema;
+import io.yukti.explain.core.claims.ClaimVerificationFailure;
 import io.yukti.explain.core.claims.ClaimVerifier;
 import io.yukti.explain.core.claims.VerificationReport;
 import io.yukti.explain.core.evidence.graph.EvidenceGraph;
@@ -42,9 +43,11 @@ import io.yukti.explain.core.evidence.graph.EvidenceGraph;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.TreeSet;
 
 /**
  * Orchestrates the paired explanation evaluation across catalog profiles, goals,
@@ -82,6 +85,38 @@ public final class PairedNarratorRunner {
     private final OptimizerRegistry optimizerRegistry;
     private final EvidenceGraphBuilder evidenceGraphBuilder = new EvidenceGraphBuilder();
     private final ClaimVerifier claimVerifier = new ClaimVerifier();
+
+    /**
+     * Side-channel capture of (claims, allowedEntities, allowedNumbers, per-claim
+     * verifier verdict) per evaluated instance. Used by {@link ExplanationEvalRunner}
+     * when the rater-extraction system property is set; otherwise unused. Populated
+     * in {@link #evaluateOne} without affecting the primary eval output.
+     */
+    private final List<RaterCaptureRow> raterCapture = new ArrayList<>();
+
+    /** One row per evaluated instance with raw claims + evidence allowlists + per-id evidence type map. */
+    public record RaterCaptureRow(
+        String profileId,
+        String goal,
+        String variant,
+        String modelId,
+        List<String> allowedEntities,
+        List<String> allowedNumbers,
+        java.util.Map<String, String> evidenceIdToType,
+        List<RaterCaptureClaim> claims
+    ) {}
+
+    /** One claim with its raw cited fields and per-claim verifier verdict. */
+    public record RaterCaptureClaim(
+        String claimId,
+        String claimType,
+        String text,
+        List<String> citedEvidenceIds,
+        List<String> citedEntities,
+        List<String> citedNumbers,
+        boolean verifierPassed,
+        List<String> verifierErrors
+    ) {}
 
     public PairedNarratorRunner() {
         this(LlmProviderRegistry.defaultRegistry(), new ExplanationEvaluator(),
@@ -173,9 +208,62 @@ public final class PairedNarratorRunner {
                                               EvidenceGraph graph, RawNarration narration) {
         String renderedText = renderForFluency(narration);
         VerifierReport verifierReport = runVerifier(graph, narration.claims());
+        captureForRaters(profileId, goal, variant, modelId, graph, narration.claims());
         return evaluator.evaluate(profileId, goal.name(), variant, modelId, evidence,
             narration.claims(), renderedText,
             verifierReport, narration.schemaFailed(), "heuristic");
+    }
+
+    /**
+     * Capture per-claim data + evidence allowlists for the rater study extraction
+     * pipeline. Re-runs the verifier so we get per-claim pass/fail, which the
+     * aggregated VerifierReport hides. The verifier is sub-millisecond
+     * ({@link io.yukti.bench.verifier.VerifierMicroBench}), so this is free.
+     *
+     * <p>Side-channel: does not affect the primary eval output.
+     */
+    private void captureForRaters(String profileId, GoalType goal, NarratorVariant variant,
+                                  LlmProviderId modelId, EvidenceGraph graph, List<Claim> claims) {
+        if (claims == null || claims.isEmpty()) return;
+        VerificationReport perClaim = claimVerifier.verify(graph, claims);
+        Map<String, List<String>> errorsByClaimId = new HashMap<>();
+        if (!perClaim.passed()) {
+            for (ClaimVerificationFailure f : perClaim.claimErrors()) {
+                errorsByClaimId.put(f.claimId(), f.errors());
+            }
+        }
+        List<RaterCaptureClaim> rcClaims = new ArrayList<>();
+        for (Claim c : claims) {
+            List<String> errs = errorsByClaimId.getOrDefault(c.claimId(), List.of());
+            rcClaims.add(new RaterCaptureClaim(
+                c.claimId(),
+                c.claimType().name(),
+                c.text(),
+                c.citedEvidenceIds(),
+                c.citedEntities(),
+                c.citedNumbers(),
+                errs.isEmpty(),
+                errs
+            ));
+        }
+        // Sort allowlists for stable serialization
+        List<String> entities = new ArrayList<>(new TreeSet<>(graph.getAllowedEntities()));
+        List<String> numbers = new ArrayList<>(new TreeSet<>(graph.getAllowedNumbers()));
+        // Build evidence id -> type map so downstream rater tooling can show
+        // human-readable type labels instead of opaque SHA-256 hashes.
+        java.util.Map<String, String> evidenceIdToType = new java.util.TreeMap<>();
+        for (var node : graph.getNodes()) {
+            evidenceIdToType.put(node.evidenceId(), node.type());
+        }
+        raterCapture.add(new RaterCaptureRow(
+            profileId, goal.name(), variant.name(), modelId.name(),
+            entities, numbers, evidenceIdToType, rcClaims
+        ));
+    }
+
+    /** Exposes the side-channel capture for downstream serialization. */
+    public List<RaterCaptureRow> raterCapture() {
+        return raterCapture;
     }
 
     /**

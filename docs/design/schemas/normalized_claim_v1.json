@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://yukti.design/schemas/normalized_claim_v1.json",
+  "title": "NormalizedClaimV1",
+  "description": "A render-safe runtime claim. Text is derived from normalizedFields after verification.",
+  "type": "object",
+  "required": [
+    "claimId",
+    "claimType",
+    "normalizedFields",
+    "citedEvidenceIds",
+    "citedEntities",
+    "citedNumbers"
+  ],
+  "properties": {
+    "claimId": {
+      "type": "string",
+      "minLength": 1,
+      "description": "SHA-256 of canonical claimType, normalizedFields, and citedEvidenceIds."
+    },
+    "claimType": {
+      "type": "string",
+      "enum": [
+        "COMPARISON",
+        "THRESHOLD",
+        "ALLOCATION",
+        "ASSUMPTION",
+        "FEE_JUSTIFICATION",
+        "CAP_SWITCH"
+      ]
+    },
+    "normalizedFields": {
+      "type": "object",
+      "description": "Type-specific values consumed by the deterministic ClaimRenderer."
+    },
+    "citedEvidenceIds": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "citedEntities": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "citedNumbers": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "renderTemplateId": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}

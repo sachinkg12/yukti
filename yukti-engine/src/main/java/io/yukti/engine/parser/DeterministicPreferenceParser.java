@@ -7,8 +7,8 @@ import java.math.BigDecimal;
 import java.util.*;
 
 /**
- * Deterministic preference parser. Phase-1: structured JSON-like or key=value.
- * Optional AI later for free-text.
+ * Deterministic preference parser for supported keywords and structured-like
+ * text. It is also the fallback for optional model-assisted interpretation.
  */
 public final class DeterministicPreferenceParser implements PreferenceParser {
     @Override

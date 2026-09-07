@@ -34,7 +34,9 @@ An **evidence bundle** is a JSON object that describes the evidence graph (nodes
 |------|-------------|
 | WINNER_BY_CATEGORY | Winner vs runner-up per category. |
 | CAP_HIT | Cap hit and segment boundary. |
+| EARN_RATE | Applied earn rate and native reward currency. |
 | FEE_BREAK_EVEN | Fee justification. |
+| PORTFOLIO_STOP | Reason the portfolio-selection loop stopped. |
 | RESULT_BREAKDOWN | Earn, credits, fees, net. |
 | PORTFOLIO_SUMMARY | Card list, total fee. |
 | ASSUMPTION | Goal/valuation assumption. |
@@ -64,6 +66,22 @@ A **claim bundle** is a JSON object with a list of claims.
 | `citedEntities` | array of string | Entity identifiers (cardIds, categories) mentioned. |
 | `citedNumbers` | array of string | Numeric values mentioned. |
 
+### 2.3 Runtime normalized claim
+
+The paper/evaluation path uses the `Claim` shape above because the model emits
+prose in `text`. The application also has a stricter render-safe path:
+`NormalizedClaim` replaces free-form `text` with type-specific
+`normalizedFields` and an optional `renderTemplateId`. `ClaimRenderer` derives
+the displayed sentence from those fields only, after which the result is
+adapted to the same verifier-facing claim contract.
+
+These representations are intentionally separate:
+
+- `claim_v1.json` documents the prose-bearing claim used by the paired
+  evaluation and portable verifier tool;
+- `normalized_claim_v1.json` documents the application runtime's deterministic
+  rendering channel.
+
 ---
 
 ## 3. Verification checklist
@@ -89,7 +107,9 @@ The validator (and ClaimVerifier) apply:
 ## 4. JSON Schemas
 
 - **Evidence block (one node):** `docs/design/schemas/evidence_block_v1.json`
-- **Claim (one claim):** `docs/design/schemas/claim_v1.json`
+- **Evaluation/verifier claim (one claim):** `docs/design/schemas/claim_v1.json`
+- **Runtime normalized claim (one claim):**
+  `docs/design/schemas/normalized_claim_v1.json`
 
 Validator: `scripts/validate_evidence_claims.py` (evidence file path, claims file path). Exit 0 if all claims pass; 1 and print violations otherwise.
 
@@ -98,4 +118,5 @@ Validator: `scripts/validate_evidence_claims.py` (evidence file path, claims fil
 ## 5. References
 
 - `yukti-explain-core`: `ClaimVerifier`, `ClaimTypeRules`, `EvidenceGraph`
-- `docs/design/VERIFICATION_GUARANTEES.md`: Soundness and completeness
+- [`verification-guarantees.md`](verification-guarantees.md): guarantees,
+  assumptions, and explicit non-guarantees

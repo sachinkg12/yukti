@@ -6,7 +6,7 @@ import java.util.Currency;
 import java.util.Objects;
 
 /**
- * Money value object. Phase-1: USD only.
+ * Money value object. Current optimization inputs and outputs are USD-denominated.
  * Rounding: HALF_UP, scale 2 for currency.
  */
 public final class Money {

@@ -8,10 +8,28 @@ Credit card portfolio optimization via mixed-integer linear programming (MILP) w
 
 Yukti selects up to 3 cards from a 70-card US credit card catalog and allocates spending across 6 categories to maximize net annual reward value under piecewise-linear reward caps, goal-dependent multi-currency valuation, and fee constraints. The MILP achieves solver-certified optimality on all benchmark instances, independently confirmed by exhaustive enumeration.
 
+## Two contributions, one explicit boundary
+
+| Contribution | What it is | Start here |
+|---|---|---|
+| **Yukti** | The reusable rewards-optimization application: catalog, optimizers, API, and React UI. | [Project documentation](https://sachinkg12.github.io/yukti/#yukti) |
+| **VerityGate** | The accepted GroundLM 2026 research contribution: a four-gate structural faithfulness framework and paired benchmark that uses Yukti as its structured-backend case study. | [VerityGate research page](https://sachinkg12.github.io/yukti/#veritygate) |
+
+The integration boundary is narrow: Yukti emits an optimization result and a
+typed evidence graph; VerityGate checks structured explanation claims against
+that graph. VerityGate never selects cards or changes solver output. Paper
+source, PDFs, paper-grade logs, and rater materials remain outside this code
+repository and are released separately.
+
+See the [project site and interactive architecture guide](https://sachinkg12.github.io/yukti/)
+or the canonical [`docs/architecture.md`](docs/architecture.md).
+
 ## Features
 
 - **MILP formulation** with piecewise-linear reward caps, goal-dependent valuation, and fee/cardinality constraints
-- **13 solver implementations** (exact, heuristic, metaheuristic, proxy baselines) behind a common `Optimizer` interface
+- **13 benchmarked solver strategies** plus 2 AHP weight variants (exact,
+  heuristic, metaheuristic, and proxy baselines) behind a common `Optimizer`
+  interface
 - **Four-gate structural claim verifier** ensuring explanations cite only solver-emitted evidence (SHA-256 digested evidence graphs)
 - **70-card catalog** covering 19 reward currencies, 10 issuers, with checksummed definitions
 - **RewardsBench v2** benchmark: 200 profiles, 450 main instances, paired statistical analysis
@@ -25,9 +43,10 @@ Yukti selects up to 3 cards from a 70-card US credit card catalog and allocates 
 | `yukti-core` | Domain model, OCP interfaces (Optimizer, RewardModel, ValuationModel, CatalogSource) |
 | `yukti-explain-core` | Claims model, evidence graph, SHA-256 digests, ClaimVerifier (4 gates) |
 | `yukti-catalog` | JSON catalog parser, checksummed card definitions (carddsl v0.1) |
-| `yukti-engine` | 13 optimizer implementations, reward/valuation models, explanation pipeline |
+| `yukti-engine` | 13 benchmarked optimizer strategies plus 2 AHP variants, reward/valuation models, explanation pipeline |
+| `yukti-evaluation` | Explanation-evaluation records, metrics, and summaries |
 | `yukti-bench` | Benchmark harness, profile generator, BLS profile generator, scaling study |
-| `yukti-api` | REST API (v1), Lambda handler, LocalServer |
+| `yukti-api` | REST API (`/v1`) local server and legacy `/optimize` Lambda adapter |
 | `yukti-web` | React 18 + TypeScript + Tailwind CSS frontend |
 
 ## Quick Start
@@ -58,11 +77,10 @@ export NARRATION_LLM_ENABLED=true
 
 | Feature | Env Variable | What it does | Without it |
 |---------|-------------|-------------|------------|
-| Goal interpretation | `GOAL_LLM_ENABLED=true` | Type "I fly AA a lot" and the LLM maps it to PROGRAM_POINTS with AA_MILES | Manual goal selection via dropdown |
-| Explanation narration | `OPENAI_API_KEY` set | Natural language explanations of optimization decisions | Template-based deterministic explanations |
-| LLM claim generation | `NARRATION_LLM_ENABLED=true` | Additional LLM-generated explanation claims | Deterministic claims only |
+| Goal interpretation | `GOAL_LLM_ENABLED=true` | Maps a free-text goal such as "I fly AA a lot" into the supported goal schema | Manual goal selection or deterministic interpretation |
+| Structured narration claims | `NARRATION_LLM_ENABLED=true` | Generates normalized claims that must pass schema validation and all four gates before rendering | Deterministic claims and narration |
 
-All three require `OPENAI_API_KEY`. Without it, the system works fully with deterministic defaults.
+Both paths require `OPENAI_API_KEY`. Without it, the system works fully with deterministic defaults.
 
 ## API
 
@@ -133,6 +151,14 @@ The `optimizerId` field is optional (defaults to `milp-v1`). Available optimizer
 - OR-Tools CBC 9.10.4067 (MILP solver)
 - Jackson 2.17 (JSON), JUnit Jupiter 5, ArchUnit
 - React 18, TypeScript, Vite 6, Tailwind CSS 3
+
+## Documentation
+
+- [Project site and visual architecture](https://sachinkg12.github.io/yukti/)
+- [System architecture](docs/architecture.md)
+- [Application specification](docs/spec.md)
+- [OpenAPI contract](openapi.yaml)
+- [Evidence and claim contract](docs/design/evidence-contract-spec.md)
 
 ## License
 

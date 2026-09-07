@@ -50,30 +50,6 @@ function parseDetailsSections(details: string): Array<{ heading: string; bullets
   return sections
 }
 
-/** Render sections as headings + bullet lists */
-function DetailsSections({ details }: { details: string }) {
-  const sections = parseDetailsSections(details)
-  if (sections.length === 0) return <p className="text-sm text-slate-600">Not available</p>
-  return (
-    <div className="space-y-6">
-      {sections.map((s) => (
-        <div key={s.heading || "section"}>
-          {s.heading && (
-            <h4 className="mb-2 text-sm font-semibold text-slate-900">{s.heading}</h4>
-          )}
-          {s.bullets.length > 0 ? (
-            <ul className="list-inside list-disc space-y-1 text-sm text-slate-600">
-              {s.bullets.map((b, i) => (
-                <li key={i}>{b}</li>
-              ))}
-            </ul>
-          ) : null}
-        </div>
-      ))}
-    </div>
-  )
-}
-
 /** Render assumptions as bullet list */
 function AssumptionsContent({ assumptions }: { assumptions: string }) {
   if (!assumptions?.trim()) return <p className="text-sm text-slate-600">Not available</p>

@@ -1,85 +1,361 @@
 openapi: 3.0.3
 info:
   title: Yukti Rewards Optimization API
-  version: 0.1.0
-
+  version: 1.0.0
+  description: >-
+    The application API for portfolio optimization and its grounded explanation.
+    VerityGate is an internal claim-verification boundary, not a separate public
+    optimization endpoint.
+servers:
+  - url: http://localhost:18000
+    description: Local development server
+tags:
+  - name: Optimization
+  - name: Configuration
+  - name: Catalog
+  - name: Operations
 paths:
-  /optimize:
+  /v1/optimize:
     post:
-      summary: Optimize portfolio for spend and goal
-      operationId: optimize
+      tags: [Optimization]
+      summary: Optimize a portfolio and return its verified explanation
+      operationId: optimizeV1
+      parameters:
+        - $ref: '#/components/parameters/RequestId'
       requestBody:
         required: true
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/OptimizeRequest'
+            example:
+              period: ANNUAL
+              spendByCategoryUsd:
+                GROCERIES: 8000
+                DINING: 4000
+                GAS: 2500
+                TRAVEL: 5000
+                ONLINE: 3000
+                OTHER: 2000
+              goal:
+                goalType: CASHBACK
+              constraints:
+                maxCards: 3
+                maxAnnualFeeUsd: 1000
+                allowBusinessCards: false
+              optimizerId: milp-v1
       responses:
         '200':
-          description: Optimization result
+          description: Optimization result and explanation metadata
+          headers:
+            X-Request-Id:
+              $ref: '#/components/headers/RequestId'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/OptimizeResponse'
-
+        '400':
+          description: Invalid request or unknown optimizer
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '500':
+          description: Internal error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /v1/config/optimizers:
+    get:
+      tags: [Configuration]
+      summary: List optimizer IDs available in this runtime
+      operationId: listOptimizers
+      responses:
+        '200':
+          description: Optimizer IDs
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [optimizers]
+                properties:
+                  optimizers:
+                    type: array
+                    uniqueItems: true
+                    items:
+                      type: string
+  /v1/config/goals:
+    get:
+      tags: [Configuration]
+      summary: List supported goals and default currency valuations
+      operationId: listGoals
+      responses:
+        '200':
+          description: Goal configuration
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GoalsConfigResponse'
+  /v1/catalog/cards:
+    get:
+      tags: [Catalog]
+      summary: List card metadata from the active catalog
+      operationId: listCards
+      parameters:
+        - name: catalogVersion
+          in: query
+          required: false
+          schema:
+            type: string
+            default: '1.0'
+      responses:
+        '200':
+          description: Catalog metadata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardsResponse'
+  /health:
+    get:
+      tags: [Operations]
+      summary: Check whether the local server is accepting requests
+      operationId: health
+      responses:
+        '200':
+          description: Healthy; response body is empty
 components:
+  parameters:
+    RequestId:
+      name: X-Request-Id
+      in: header
+      required: false
+      description: Caller-supplied correlation ID; generated when omitted.
+      schema:
+        type: string
+  headers:
+    RequestId:
+      description: Correlation ID used for this request.
+      schema:
+        type: string
   schemas:
     OptimizeRequest:
       type: object
-      required: [spend, goal]
+      required: [period, spendByCategoryUsd, goal, constraints]
       properties:
-        monthly:
-          type: boolean
-          default: false
-        spend:
+        catalogVersion:
+          type: string
+          default: v1
+        period:
+          type: string
+          enum: [ANNUAL, MONTHLY]
+        spendByCategoryUsd:
           type: object
-          additionalProperties:
-            type: number
-          example:
-            GROCERIES: 500
-            DINING: 250
-            GAS: 200
-            TRAVEL: 166
-            ONLINE: 100
-            OTHER: 416
+          description: Non-negative USD spend keyed by a supported category.
+          additionalProperties: false
+          properties:
+            GROCERIES: { type: number, minimum: 0 }
+            DINING: { type: number, minimum: 0 }
+            GAS: { type: number, minimum: 0 }
+            TRAVEL: { type: number, minimum: 0 }
+            ONLINE: { type: number, minimum: 0 }
+            OTHER: { type: number, minimum: 0 }
         goal:
+          $ref: '#/components/schemas/Goal'
+        constraints:
+          $ref: '#/components/schemas/Constraints'
+        goalPrompt:
+          type: string
+          description: >-
+            Optional natural-language input for the configured GoalInterpreter.
+            The validated interpretation still resolves to one supported goal.
+        optimizerId:
+          type: string
+          default: milp-v1
+          description: An ID returned by GET /v1/config/optimizers.
+    Goal:
+      type: object
+      required: [goalType]
+      properties:
+        goalType:
           type: string
           enum: [CASHBACK, FLEX_POINTS, PROGRAM_POINTS]
+        primaryCurrency:
+          type: string
+          description: Required when goalType is PROGRAM_POINTS.
+        preferredCurrencies:
+          type: array
+          items: { type: string }
+        cppOverrides:
+          type: object
+          description: USD per point by reward-currency ID.
+          additionalProperties:
+            type: number
+            exclusiveMinimum: true
+            minimum: 0
+            maximum: 0.10
+    Constraints:
+      type: object
+      required: [maxCards, maxAnnualFeeUsd, allowBusinessCards]
+      properties:
         maxCards:
           type: integer
-          default: 3
+          minimum: 1
+          maximum: 3
+        maxAnnualFeeUsd:
+          type: number
+          minimum: 0
+          maximum: 5000
+        allowBusinessCards:
+          type: boolean
     OptimizeResponse:
       type: object
+      required:
+        - requestId
+        - catalogVersion
+        - optimizerId
+        - portfolio
+        - allocation
+        - breakdown
+        - explanation
+        - evidence
+        - evidenceGraphDigest
+        - evidenceIds
+        - claimsDigest
+        - verificationStatus
+        - claimCount
+        - verifierErrorCount
       properties:
+        requestId: { type: string }
+        catalogVersion: { type: string }
+        optimizerId: { type: string }
         portfolio:
           type: array
           items:
-            type: string
+            $ref: '#/components/schemas/PortfolioCard'
         allocation:
-          type: object
-          additionalProperties:
-            type: string
-        breakdown:
-          type: object
-          properties:
-            earnValueUsd: { type: number }
-            creditsValueUsd: { type: number }
-            feesUsd: { type: number }
-            netUsd: { type: number }
-        switchingNotes:
           type: array
           items:
-            type: string
+            $ref: '#/components/schemas/AllocationEntry'
+        breakdown:
+          $ref: '#/components/schemas/Breakdown'
         explanation:
+          $ref: '#/components/schemas/Explanation'
+        evidence:
+          type: array
+          items:
+            $ref: '#/components/schemas/EvidenceBlock'
+        evidenceGraphDigest: { type: string }
+        evidenceIds:
+          type: array
+          items: { type: string }
+        claimsDigest: { type: string }
+        verificationStatus: { type: string }
+        claimCount: { type: integer, minimum: 0 }
+        verifierErrorCount: { type: integer, minimum: 0 }
+        goalInterpretation:
+          allOf:
+            - $ref: '#/components/schemas/GoalInterpretation'
+          nullable: true
+    PortfolioCard:
+      type: object
+      required: [cardId, name, issuer, annualFeeUsd, rewardCurrency]
+      properties:
+        cardId: { type: string }
+        name: { type: string }
+        issuer: { type: string }
+        annualFeeUsd: { type: number }
+        rewardCurrency: { type: string }
+    AllocationEntry:
+      type: object
+      required: [category, cardId]
+      properties:
+        category: { type: string }
+        cardId: { type: string }
+        earnRatePercent: { type: number, nullable: true }
+        earnValueUsd: { type: number, nullable: true }
+    Breakdown:
+      type: object
+      required: [totalEarnValueUsd, totalCreditValueUsd, totalFeesUsd, netValueUsd]
+      properties:
+        totalEarnValueUsd: { type: number }
+        totalCreditValueUsd: { type: number }
+        totalFeesUsd: { type: number }
+        netValueUsd: { type: number }
+    Explanation:
+      type: object
+      required: [summary, allocationTable, details, assumptions, fullText]
+      properties:
+        summary: { type: string }
+        allocationTable: { type: string }
+        details: { type: string }
+        assumptions: { type: string }
+        fullText: { type: string }
+    EvidenceBlock:
+      type: object
+      required: [type, cardId, category, content]
+      properties:
+        type: { type: string }
+        cardId: { type: string }
+        category: { type: string }
+        content: { type: string }
+    GoalInterpretation:
+      type: object
+      required: [userPrompt, interpretedGoalType, rationale]
+      properties:
+        userPrompt: { type: string }
+        interpretedGoalType:
+          type: string
+          enum: [CASHBACK, FLEX_POINTS, PROGRAM_POINTS]
+        primaryCurrency: { type: string, nullable: true }
+        rationale: { type: string }
+    GoalsConfigResponse:
+      type: object
+      required: [supportedGoals, defaultCppByCurrency]
+      properties:
+        supportedGoals:
+          type: array
+          items:
+            type: object
+            required: [goalType, requiresPrimaryCurrency, allowedCurrencies]
+            properties:
+              goalType: { type: string }
+              requiresPrimaryCurrency: { type: boolean }
+              allowedCurrencies:
+                type: array
+                items: { type: string }
+        defaultCppByCurrency:
           type: object
-          properties:
-            narrative: { type: string }
-            evidenceBlocks:
-              type: array
-              items:
-                type: object
-                properties:
-                  type: { type: string }
-                  cardId: { type: string }
-                  category: { type: string }
-                  content: { type: string }
+          additionalProperties: { type: number }
+    CardsResponse:
+      type: object
+      required: [catalogVersion, cards]
+      properties:
+        catalogVersion: { type: string }
+        cards:
+          type: array
+          items:
+            type: object
+            required: [cardId, issuer, name, segment, annualFeeUsd, rewardCurrency]
+            properties:
+              cardId: { type: string }
+              issuer: { type: string }
+              name: { type: string }
+              segment: { type: string }
+              annualFeeUsd: { type: number }
+              rewardCurrency: { type: string }
+    ApiError:
+      type: object
+      required: [requestId, errorCode, message, details]
+      properties:
+        requestId: { type: string }
+        errorCode: { type: string }
+        message: { type: string }
+        details:
+          type: array
+          items:
+            type: object
+            required: [field, issue]
+            properties:
+              field: { type: string }
+              issue: { type: string }

@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Architecture and documentation for the Yukti rewards-optimization application and the VerityGate faithfulness research contribution.">
+  <meta name="theme-color" content="#bd3038">
+  <title>Yukti · Architecture &amp; VerityGate</title>
+  <link rel="canonical" href="https://sachinkg12.github.io/yukti/">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <aside class="sidebar" id="sidebar" aria-label="Project navigation">
+    <div class="brand">
+      <a href="#overview" aria-label="Yukti documentation home">
+        <span class="brand-mark" aria-hidden="true">Y</span>
+        <span>
+          <strong>Yukti</strong>
+          <small>System map</small>
+        </span>
+      </a>
+    </div>
+
+    <nav class="side-nav" aria-label="Sections">
+      <a href="#overview" class="active"><span>01</span>Overview</a>
+      <a href="#architecture"><span>02</span>Architecture</a>
+      <a href="#yukti"><span>03</span>Yukti application</a>
+      <a href="#veritygate"><span>04</span>VerityGate research</a>
+      <a href="#contracts"><span>05</span>Contracts</a>
+      <a href="#reproduce"><span>06</span>Reproduce</a>
+      <a href="#documentation"><span>07</span>Documentation</a>
+    </nav>
+
+  </aside>
+
+  <button class="menu-button" type="button" aria-label="Open navigation" aria-controls="sidebar" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+
+  <main id="main">
+    <section class="hero section-shell" id="overview">
+      <div class="eyebrow">Optimization systems · grounded explanations</div>
+      <h1>Optimize decisions.<br><span>Verify explanations.</span></h1>
+      <p class="hero-copy">Yukti and VerityGate are two contributions with one carefully defined interface. Yukti computes a recommendation. VerityGate checks whether structured narration claims are supported by the evidence Yukti emits.</p>
+
+      <div class="hero-actions">
+        <a class="button primary" href="https://github.com/sachinkg12/yukti">View code <span aria-hidden="true">↗</span></a>
+        <a class="button secondary" href="#architecture">Explore architecture <span aria-hidden="true">↓</span></a>
+      </div>
+
+      <div class="contribution-grid" aria-label="Project contributions">
+        <article class="contribution-card app-card">
+          <div class="card-kicker"><span class="card-number">A</span> Application contribution</div>
+          <h2>Yukti</h2>
+          <p>A reusable rewards-optimization application: versioned catalog, goal-aware valuation, exact and comparative optimizers, REST API, and React interface.</p>
+          <ul class="compact-list">
+            <li>Owns card rules and portfolio decisions</li>
+            <li>Works without any model credentials</li>
+            <li>Produces typed optimization evidence</li>
+          </ul>
+          <a class="text-link" href="#yukti">Application architecture <span aria-hidden="true">→</span></a>
+        </article>
+
+        <div class="boundary-marker" aria-label="Integration boundary">
+          <span>Typed boundary</span>
+          <strong>Result + EvidenceGraph</strong>
+          <span aria-hidden="true">→</span>
+        </div>
+
+        <article class="contribution-card research-card">
+          <div class="card-kicker"><span class="card-number">B</span> Research contribution</div>
+          <h2>VerityGate</h2>
+          <p>A four-gate structural faithfulness framework and paired benchmark for grounded LLM narrations over structured evidence.</p>
+          <ul class="compact-list">
+            <li>Owns claim validation and evaluation</li>
+            <li>Cannot alter the optimization result</li>
+            <li>Uses Yukti as the evaluated case study</li>
+          </ul>
+          <a class="text-link" href="#veritygate">Research architecture <span aria-hidden="true">→</span></a>
+        </article>
+      </div>
+
+      <div class="metric-strip" aria-label="Project scale">
+        <div><strong>70</strong><span>catalog cards</span></div>
+        <div><strong>13</strong><span>benchmarked optimizers</span></div>
+        <div><strong>4</strong><span>verification gates</span></div>
+        <div><strong>900</strong><span>paired benchmark instances</span></div>
+      </div>
+    </section>
+
+    <section class="section-shell" id="architecture">
+      <div class="section-heading">
+        <span class="section-index">02</span>
+        <div>
+          <p class="eyebrow">System architecture</p>
+          <h2>One repository, two bounded systems</h2>
+          <p>The default path is deterministic from request to verified response. Model assistance is optional and sits outside the optimization authority boundary.</p>
+        </div>
+      </div>
+
+      <div class="architecture-tabs" data-tabs>
+        <div class="tab-list" role="tablist" aria-label="Architecture views">
+          <button role="tab" aria-selected="true" aria-controls="panel-runtime" id="tab-runtime">Runtime flow</button>
+          <button role="tab" aria-selected="false" aria-controls="panel-modules" id="tab-modules" tabindex="-1">Module map</button>
+          <button role="tab" aria-selected="false" aria-controls="panel-verifier" id="tab-verifier" tabindex="-1">VerityGate flow</button>
+          <button role="tab" aria-selected="false" aria-controls="panel-evaluation" id="tab-evaluation" tabindex="-1">Evaluation flow</button>
+        </div>
+
+        <div class="tab-panel" role="tabpanel" id="panel-runtime" aria-labelledby="tab-runtime">
+          <div class="flow-grid runtime-flow">
+            <div class="flow-node app-node"><span>01</span><strong>React UI</strong><small>Spend · goal · constraints</small></div>
+            <div class="flow-arrow" aria-hidden="true">→</div>
+            <div class="flow-node app-node"><span>02</span><strong>V1 API</strong><small>Validate · correlate</small></div>
+            <div class="flow-arrow" aria-hidden="true">→</div>
+            <div class="flow-node app-node"><span>03</span><strong>Goal adapter</strong><small>Deterministic by default</small></div>
+            <div class="flow-arrow" aria-hidden="true">→</div>
+            <div class="flow-node app-node"><span>04</span><strong>Optimizer</strong><small>MILP default · 1–3 cards</small></div>
+            <div class="flow-arrow" aria-hidden="true">→</div>
+            <div class="flow-node app-node emphasis"><span>05</span><strong>Typed evidence</strong><small>Stable IDs · SHA-256 digest</small></div>
+            <div class="flow-arrow boundary-arrow" aria-hidden="true">→</div>
+            <div class="flow-node research-node"><span>06</span><strong>Claim channel</strong><small>Schema parse · four gates</small></div>
+            <div class="flow-arrow" aria-hidden="true">→</div>
+            <div class="flow-node research-node"><span>07</span><strong>Safe output</strong><small>Verified or fallback</small></div>
+          </div>
+          <div class="architecture-note"><strong>Authority rule</strong><span>The model may interpret free text or propose narration claims. It never writes the catalog, objective, constraints, allocation, or solver result.</span></div>
+        </div>
+
+        <div class="tab-panel" role="tabpanel" id="panel-modules" aria-labelledby="tab-modules" hidden>
+          <div class="module-map">
+            <div class="module-row foundation">
+              <article><code>yukti-explain-core</code><span>Portable claim/evidence protocol</span></article>
+              <article><code>yukti-core</code><span>Domain and extension interfaces</span></article>
+              <article><code>yukti-catalog</code><span>Versioned rule source</span></article>
+            </div>
+            <div class="module-connector" aria-hidden="true"><span></span><strong>↓</strong><span></span></div>
+            <article class="module-center"><code>yukti-engine</code><span>Valuation · optimization · evidence · narration</span></article>
+            <div class="module-connector" aria-hidden="true"><span></span><strong>↓</strong><span></span></div>
+            <div class="module-row consumers">
+              <article><code>yukti-api</code><span>HTTP and Lambda boundary</span></article>
+              <article><code>yukti-evaluation</code><span>Metrics and records</span></article>
+              <article><code>yukti-bench</code><span>Benchmarks and experiments</span></article>
+            </div>
+          </div>
+          <p class="panel-caption"><code>yukti-web</code> is an HTTP client of <code>yukti-api</code>; it does not import Java internals. The Pages site you are reading is documentation and is not the runtime UI.</p>
+        </div>
+
+        <div class="tab-panel" role="tabpanel" id="panel-verifier" aria-labelledby="tab-verifier" hidden>
+          <div class="verifier-pipeline">
+            <div class="pipeline-input"><span>INPUT</span><strong>EvidenceGraph + structured claim</strong></div>
+            <div class="gate"><span>G1</span><strong>Evidence existence</strong><small>Every cited ID resolves</small></div>
+            <div class="gate"><span>G2</span><strong>Entity allowlist</strong><small>Cards and categories are known</small></div>
+            <div class="gate"><span>G3</span><strong>Number binding</strong><small>Declared numbers are allowed</small></div>
+            <div class="gate"><span>G4</span><strong>Type rules</strong><small>Required evidence types are cited</small></div>
+            <div class="pipeline-output"><span>OUTPUT</span><strong>Verified claim or violation list</strong></div>
+          </div>
+          <p class="panel-caption">This proves structural support in the declared claim channel. It does not prove unrestricted prose entailment or that the evidence itself is complete and factually correct.</p>
+        </div>
+
+        <div class="tab-panel" role="tabpanel" id="panel-evaluation" aria-labelledby="tab-evaluation" hidden>
+          <div class="evaluation-grid">
+            <article class="evaluation-lane app-lane">
+              <span class="lane-label">Yukti evaluation</span>
+              <h3>RewardsBench v2</h3>
+              <p>Portfolio quality, exactness, runtime, ablations, and comparative behavior.</p>
+              <div class="equation">200 profiles<br><strong>150 main + 50 holdout</strong></div>
+            </article>
+            <article class="evaluation-lane research-lane">
+              <span class="lane-label">VerityGate evaluation</span>
+              <h3>Paired narration benchmark</h3>
+              <p>Grounded vs. ungrounded narration across goals and narrator families.</p>
+              <div class="equation">50 × 3 × 3 × 2<br><strong>= 900 instances</strong></div>
+            </article>
+          </div>
+          <p class="panel-caption">Code, schemas, prompts, and reconciliation live in GitHub. Paper-grade logs, rater records, and immutable manifests live in the separate versioned supplement.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-shell tinted" id="yukti">
+      <div class="section-heading">
+        <span class="section-index">03</span>
+        <div>
+          <p class="eyebrow">Application contribution</p>
+          <h2>Yukti decides</h2>
+          <p>A deterministic optimization core wrapped in explicit extension interfaces, an auditable API, and an optional AI-assistance layer.</p>
+        </div>
+      </div>
+
+      <div class="three-column">
+        <article class="feature-card">
+          <span class="icon-box" aria-hidden="true">∑</span>
+          <h3>Optimize</h3>
+          <p><code>milp-v1</code> jointly selects cards and allocates spend under card-count, annual-fee, linking, and piecewise reward-cap constraints.</p>
+        </article>
+        <article class="feature-card">
+          <span class="icon-box" aria-hidden="true">◇</span>
+          <h3>Value by goal</h3>
+          <p>Cash, transferable points, and program currencies are converted using versioned USD-per-point values and goal-specific policies.</p>
+        </article>
+        <article class="feature-card">
+          <span class="icon-box" aria-hidden="true">≡</span>
+          <h3>Explain from evidence</h3>
+          <p>Winner, cap, allocation, fee, assumption, and result facts are emitted as typed blocks with stable IDs and a graph digest.</p>
+        </article>
+      </div>
+
+      <div class="split-layout">
+        <div>
+          <p class="mini-label">Default optimization objective</p>
+          <div class="formula-card">
+            <span>maximize</span>
+            <strong>goal-valued rewards + credits − annual fees</strong>
+            <small>subject to portfolio, budget, allocation, linking, and cap-segment constraints</small>
+          </div>
+        </div>
+        <div class="detail-list">
+          <div><strong>Catalog</strong><span>70 US cards · 19 reward currencies · 10 issuers</span></div>
+          <div><strong>Strategies</strong><span>13 benchmarked optimizers plus 2 AHP variants in the runtime registry</span></div>
+          <div><strong>Stack</strong><span>Java 21 · OR-Tools CBC · React 18 · TypeScript</span></div>
+          <div><strong>Interfaces</strong><span>Optimizer · RewardModel · ValuationModel · CatalogSource</span></div>
+        </div>
+      </div>
+
+      <div class="boundary-callout">
+        <div class="boundary-icon" aria-hidden="true">AI</div>
+        <div><strong>Optional means optional.</strong><p>Goal interpretation and LLM narration are independently enabled. If credentials or switches are absent—or structured narration fails verification—the deterministic application path remains intact.</p></div>
+      </div>
+    </section>
+
+    <section class="section-shell" id="veritygate">
+      <div class="section-heading">
+        <span class="section-index">04</span>
+        <div>
+          <p class="eyebrow">Research contribution</p>
+          <h2>VerityGate verifies</h2>
+          <p>A schema-level framework for deciding which LLM-generated claims are structurally licensed by a typed evidence graph.</p>
+        </div>
+      </div>
+
+      <div class="paper-banner">
+        <div>
+          <div class="paper-venue">
+            <span class="paper-status">Accepted paper</span>
+            <span><a href="https://groundlm.github.io/grouplm_emnlp2026/">GroundLM 2026</a> · <a href="https://2026.emnlp.org/">EMNLP 2026 workshop</a></span>
+          </div>
+          <h3>VERITYGATE: A Four-Gate Schema-Level Faithfulness Framework and Paired Benchmark for Grounded LLM Narrations over Structured Evidence</h3>
+          <p>Sachin Gupta · Independent Researcher · San Jose, California, USA</p>
+        </div>
+        <a class="button secondary" href="https://github.com/sachinkg12/yukti/blob/main/docs/veritygate-groundlm-2026/README.md">Code release map <span aria-hidden="true">↗</span></a>
+      </div>
+
+      <div class="gate-grid">
+        <article><span>Gate 1</span><h3>Evidence existence</h3><p>Reject citations whose stable evidence IDs are absent from the graph.</p></article>
+        <article><span>Gate 2</span><h3>Entity allowlist</h3><p>Reject declared cards or categories outside the graph-derived entity set.</p></article>
+        <article><span>Gate 3</span><h3>Number binding</h3><p>Reject declared numbers outside the graph's numeric allowlist and documented constants.</p></article>
+        <article><span>Gate 4</span><h3>Claim-type rules</h3><p>Require the evidence types needed by comparisons, fees, assumptions, and cap switches.</p></article>
+      </div>
+
+      <div class="research-columns">
+        <article>
+          <p class="mini-label">What transfers</p>
+          <h3>A portable protocol</h3>
+          <p>The claim/evidence schemas, stable citation pattern, graph digest, gate interface, and fail-closed rendering policy can be reused beyond rewards optimization.</p>
+        </article>
+        <article>
+          <p class="mini-label">What must be adapted</p>
+          <h3>Domain semantics</h3>
+          <p>Evidence builders, entity vocabularies, numeric policies, and type-specific rules encode domain knowledge and require new validation in another domain.</p>
+        </article>
+        <article>
+          <p class="mini-label">What is not claimed</p>
+          <h3>Not a factuality oracle</h3>
+          <p>A passing claim has structural support. The framework does not guarantee unrestricted prose entailment, complete citation, or correct upstream data.</p>
+        </article>
+      </div>
+
+      <div class="artifact-boundary">
+        <div>
+          <span class="artifact-type">GitHub · reusable code</span>
+          <strong>Verifier, schemas, prompts, runners, tests, pre-registration copy</strong>
+        </div>
+        <div class="separator" aria-hidden="true"></div>
+        <div>
+          <span class="artifact-type">Zenodo · paper artifact</span>
+          <strong>Paper-grade logs, rater data, manifests, reconstructed tables</strong>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-shell tinted" id="contracts">
+      <div class="section-heading">
+        <span class="section-index">05</span>
+        <div>
+          <p class="eyebrow">Stable contracts</p>
+          <h2>Inspect the boundary, not a black box</h2>
+          <p>The public API reports optimization identity and verification metadata. The internal portable protocol binds claims to evidence by stable IDs and declared values.</p>
+        </div>
+      </div>
+
+      <div class="contract-grid">
+        <article class="contract-card">
+          <div class="contract-head"><span>HTTP</span><code>POST /v1/optimize</code></div>
+          <ul>
+            <li>Structured spend, goal, and constraints</li>
+            <li>Optional <code>goalPrompt</code> and <code>optimizerId</code></li>
+            <li>Portfolio, allocations, and value breakdown</li>
+            <li>Evidence and claim digests, status, counts</li>
+          </ul>
+          <a href="https://github.com/sachinkg12/yukti/blob/main/openapi.yaml">OpenAPI specification <span aria-hidden="true">↗</span></a>
+        </article>
+        <article class="contract-card">
+          <div class="contract-head"><span>JSON</span><code>EvidenceGraph</code></div>
+          <ul>
+            <li>Typed nodes with stable <code>evidenceId</code></li>
+            <li>Card, category, and content fields</li>
+            <li>Graph-derived entity and number allowlists</li>
+            <li>Order-independent SHA-256 identity</li>
+          </ul>
+          <a href="https://github.com/sachinkg12/yukti/tree/main/docs/design/schemas">Evidence schemas <span aria-hidden="true">↗</span></a>
+        </article>
+        <article class="contract-card">
+          <div class="contract-head"><span>JSON</span><code>ClaimBundle</code></div>
+          <ul>
+            <li>Closed claim-type vocabulary</li>
+            <li>Explicit evidence citations</li>
+            <li>Declared entities and numbers</li>
+            <li>Violation report when a gate fails</li>
+          </ul>
+          <a href="https://github.com/sachinkg12/yukti/blob/main/docs/design/evidence-contract-spec.md">Portable contract <span aria-hidden="true">↗</span></a>
+        </article>
+      </div>
+    </section>
+
+    <section class="section-shell" id="reproduce">
+      <div class="section-heading">
+        <span class="section-index">06</span>
+        <div>
+          <p class="eyebrow">Build and reproduce</p>
+          <h2>Credential-free checks first</h2>
+          <p>The application tests, verifier tests, and microbenchmark do not require model credentials. Paper-table reconciliation uses the separately downloaded supplement.</p>
+        </div>
+      </div>
+
+      <div class="command-stack">
+        <article>
+          <div><span>01</span><strong>Build and test the repository</strong></div>
+          <pre><code>./gradlew test --no-daemon</code></pre>
+          <button class="copy-button" data-copy="./gradlew test --no-daemon" type="button">Copy</button>
+        </article>
+        <article>
+          <div><span>02</span><strong>Run the Yukti application locally</strong></div>
+          <pre><code>./gradlew :yukti-api:runServer
+cd yukti-web &amp;&amp; npm install &amp;&amp; npm run dev</code></pre>
+          <button class="copy-button" data-copy="./gradlew :yukti-api:runServer&#10;cd yukti-web && npm install && npm run dev" type="button">Copy</button>
+        </article>
+        <article>
+          <div><span>03</span><strong>Run the VerityGate verifier microbenchmark</strong></div>
+          <pre><code>./gradlew :yukti-bench:runVerifierMicroBench --no-daemon</code></pre>
+          <button class="copy-button" data-copy="./gradlew :yukti-bench:runVerifierMicroBench --no-daemon" type="button">Copy</button>
+        </article>
+        <article>
+          <div><span>04</span><strong>Reconcile paper tables from the supplement</strong></div>
+          <pre><code>python3 scripts/eval/reconcile_veritygate_results.py \
+  --artifact-root /path/to/veritygate-groundlm-2026</code></pre>
+          <button class="copy-button" data-copy="python3 scripts/eval/reconcile_veritygate_results.py --artifact-root /path/to/veritygate-groundlm-2026" type="button">Copy</button>
+        </article>
+      </div>
+    </section>
+
+    <section class="section-shell docs-section" id="documentation">
+      <div class="section-heading">
+        <span class="section-index">07</span>
+        <div>
+          <p class="eyebrow">Documentation index</p>
+          <h2>Go deeper by responsibility</h2>
+          <p>Application documentation and research documentation stay in distinct paths, with the evidence contract linking them.</p>
+        </div>
+      </div>
+
+      <div class="docs-groups">
+        <div>
+          <p class="group-title"><span>A</span> Yukti application</p>
+          <a class="doc-link" href="https://github.com/sachinkg12/yukti/blob/main/docs/architecture.md"><span><strong>System architecture</strong><small>Modules, runtime paths, boundaries</small></span><b aria-hidden="true">↗</b></a>
+          <a class="doc-link" href="https://github.com/sachinkg12/yukti/blob/main/docs/spec.md"><span><strong>Application specification</strong><small>Behavior and quality attributes</small></span><b aria-hidden="true">↗</b></a>
+          <a class="doc-link" href="https://github.com/sachinkg12/yukti/blob/main/docs/bench/profiles.md"><span><strong>RewardsBench profiles</strong><small>Frozen v1 and current v2 lineage</small></span><b aria-hidden="true">↗</b></a>
+          <a class="doc-link" href="https://github.com/sachinkg12/yukti/blob/main/docs/design/llm-goal-interpretation.md"><span><strong>Goal interpretation</strong><small>Optional model boundary and fallback</small></span><b aria-hidden="true">↗</b></a>
+        </div>
+        <div>
+          <p class="group-title"><span>B</span> VerityGate research</p>
+          <a class="doc-link" href="https://github.com/sachinkg12/yukti/blob/main/docs/veritygate-groundlm-2026/README.md"><span><strong>Code release map</strong><small>Paper component to source location</small></span><b aria-hidden="true">↗</b></a>
+          <a class="doc-link" href="https://github.com/sachinkg12/yukti/blob/main/docs/veritygate-groundlm-2026/eval_preregistration.md"><span><strong>Pre-registration</strong><small>Metrics, cells, and stop conditions</small></span><b aria-hidden="true">↗</b></a>
+          <a class="doc-link" href="https://github.com/sachinkg12/yukti/blob/main/docs/veritygate-groundlm-2026/CODE_PROVENANCE.md"><span><strong>Code provenance</strong><small>Paper-grade base and later additions</small></span><b aria-hidden="true">↗</b></a>
+          <a class="doc-link" href="https://github.com/sachinkg12/yukti/blob/main/docs/design/verification-guarantees.md"><span><strong>Guarantees and limits</strong><small>What passing four gates establishes</small></span><b aria-hidden="true">↗</b></a>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div><strong>Yukti</strong><span>Open-source rewards optimization with structurally verified explanations.</span></div>
+      <div><span>Created by Sachin Gupta</span><span>Apache-2.0 · <span id="year">2026</span></span></div>
+    </footer>
+  </main>
+
+  <script src="assets/site.js"></script>
+</body>
+</html>
